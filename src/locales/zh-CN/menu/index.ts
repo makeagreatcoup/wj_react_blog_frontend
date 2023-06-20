@@ -22,6 +22,7 @@ export const zhCN_menu = {
 	'app.result': '结果页',
 	'app.result.success': '成功页',
 	'app.result.failed': '失败页',
+	'app.result.apply': '允许页',
 
 	'app.abnormal': '异常页',
 	'app.abnormal.403': '403',

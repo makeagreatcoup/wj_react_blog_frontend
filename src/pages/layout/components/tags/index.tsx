@@ -90,7 +90,7 @@ const Index: FC = () => {
 				onChange={onChange}
 				activeKey={activeTagId}
 				onTabClose={(targetKey) => onClose(targetKey as string)}
-				// tabBarExtraContent={<TagsViewAction />}
+				tabBarExtraContent={<TagsViewAction />}
 				className="headertabs"
 			>
 				{tags.map((tag) => (

@@ -120,6 +120,11 @@ const MENU_CONFIG: MenuItem[] = [
 				itemKey: '5-2',
 				text: 'app.result.failed',
 				path: '/result/failed'
+			},
+			{
+				itemKey: '5-3',
+				text: 'app.result.apply',
+				path: '/result/apply'
 			}
 		]
 	},

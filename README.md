@@ -1,2 +1,2 @@
-# wj_next_blog_frontend
-一个nextjs框架的博客前端项目
+# wj_react_blog_frontend
+一个react框架的博客前端项目

@@ -24,6 +24,7 @@ const DetailAdvanced = lazy(() => import('@/pages/detail/advanced'))
 
 const ResultSuccess = lazy(() => import('@/pages/result/success'))
 const ResultFailed = lazy(() => import('@/pages/result/failed'))
+const ResultApply = lazy(()=>import('@/pages/result/apply'))
 
 const Abnormal403 = lazy(() => import('@/pages/abnormal/403'))
 const Abnormal404 = lazy(() => import('@/pages/abnormal/404'))
@@ -93,7 +94,10 @@ const routeList: RouteObject[] = [
 				path: 'result/failed',
 				element: <WrapperRouteComponent element={<ResultFailed />} titleId="结果失败页" auth />
 			},
-
+			{
+				path: 'result/apply',
+				element: <WrapperRouteComponent element={<ResultApply />} titleId="结果允许页" auth />
+			},
 			{
 				path: 'abnormal/403',
 				element: <WrapperRouteComponent element={<Abnormal403 />} titleId="403" auth />
