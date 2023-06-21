@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react'
 import { Layout, Nav } from '@douyinfe/semi-ui'
 import { IconSemiLogo } from '@douyinfe/semi-icons'
-import menuList, { MenuItem } from '@/menus/config'
+import menuList, { MenuItem } from '@/menus/blogConfig'
 import { useLocation, useNavigate } from 'react-router'
 import { useLocale } from '@/locales'
 import useStore from '@/store/common/global'

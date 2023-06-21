@@ -8,18 +8,25 @@ export interface WrapperRouteProps extends RouteProps {
 	titleId: string
 	/** authorization？ */
 	auth?: boolean
+	// 加入函数式组件
+	component?:React.ComponentType<any>;
 }
 
 const PublicRoute = (props) => {
 	return props.element
 }
 
-const WrapperRouteComponent: FC<WrapperRouteProps> = ({ titleId, auth, ...props }) => {
+const WrapperRouteComponent: FC<WrapperRouteProps> = ({ element,titleId, auth,component:Component ,...props }) => {
 	const WitchRoute = auth ? PrivateRoute : PublicRoute
 	if (titleId) {
 		document.title = titleId
 	}
-	return <WitchRoute {...props} />
+	
+	// 加入Component
+	const routeElement = element || (
+    <Component {...props} />
+  );
+  return <WitchRoute element={routeElement} />;
 }
 
 const WrapperRouteWithOutLayoutComponent: FC<WrapperRouteProps> = ({ titleId, auth, ...props }) => {

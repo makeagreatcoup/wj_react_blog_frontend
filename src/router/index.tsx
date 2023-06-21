@@ -1,4 +1,4 @@
-import React, { lazy, FC } from 'react'
+import React, { lazy, FC, ComponentType, Suspense } from 'react'
 import { RouteObject } from 'react-router'
 import { useRoutes } from 'react-router-dom'
 import { WrapperRouteComponent, WrapperRouteWithOutLayoutComponent } from './config'
@@ -50,6 +50,31 @@ const routeList: RouteObject[] = [
 				path: 'dashboard/monitor',
 				element: <WrapperRouteComponent element={<DashboardMonitor />} titleId="监控页" auth />
 			},
+
+			{
+				path: 'blog/article',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/article'))} titleId="文章管理" auth />
+
+			},
+			{
+				path: 'blog/project',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/project'))} titleId="项目管理" auth />
+			},
+			{
+				path: 'comment/article',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/comment/article'))} titleId="文章评论" auth />
+
+			},
+			{
+				path: 'comment/project',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/comment/project'))} titleId="项目评论" auth />
+			},
+			{
+				path: 'category/list',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/category/list'))} titleId="标签管理" auth />
+
+			},
+
 			{
 				path: 'form/basic',
 				element: <WrapperRouteComponent element={<FormBasic />} titleId="基础表单页" auth />

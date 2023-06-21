@@ -3,7 +3,7 @@ import { Tabs, TabPane } from '@douyinfe/semi-ui'
 import { useNavigate, useLocation } from 'react-router-dom'
 import TagsViewAction from './tagAction'
 import useStore from '@/store/common/headerTag'
-import menuList, { MenuItem } from '@/menus/config'
+import menuList, { MenuItem } from '@/menus/blogConfig'
 import { useLocale } from '@/locales'
 import './index.scss'
 

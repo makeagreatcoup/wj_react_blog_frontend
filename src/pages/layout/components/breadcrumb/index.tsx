@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Breadcrumb } from '@douyinfe/semi-ui'
-import menuList, { MenuItem } from '@/menus/config'
+import menuList, { MenuItem } from '@/menus/blogConfig'
 import { useLocation } from 'react-router-dom'
 import { useLocale } from '@/locales'
 
