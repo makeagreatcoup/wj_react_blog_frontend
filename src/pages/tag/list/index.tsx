@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
-import { Button, Table, Popconfirm, Toast } from '@douyinfe/semi-ui'
+import { Button, Table, Popconfirm, Toast, Tag, Typography } from '@douyinfe/semi-ui'
 import { IconEdit, IconDelete } from '@douyinfe/semi-icons'
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
-import ModalAddCategory from '@/components/category/add'
-import ModalUpdateCategory from '@/components/category/update'
+import ModalAddtag from '@/components/tag/add'
+import ModalUpdatetag from '@/components/tag/update'
+import { getColor } from '@/utils/utils'
 
 const Index: React.FC = () => {
 	const [data, setData] = useState([])
@@ -27,20 +28,46 @@ const Index: React.FC = () => {
 	}
 	const columns = [
 		{
-			title: '分类名称',
-			dataIndex: 'name',
-			width: 500,
-			key: 'name'
+			title: '标签名称',
+			dataIndex: 'title',
+			width: 200,
+			key: 'title'
 		},
 		{
-			title: '层级',
-			dataIndex: 'depth',
-			key: 'depth'
+			title: '标签描述',
+			dataIndex: 'summary',
+			width: 400,
+			key: 'summary'
 		},
 		{
-			title: '文章排序优先级',
-			dataIndex: 'customOrder',
-			key: 'customOrder'
+			title: '标签颜色',
+			dataIndex: 'color',
+			align:'center',
+			key: 'color',
+			render:(record)=>{
+				return(
+					<>
+						{/* {['amber', 'blue', 'cyan', 'green', 'grey', 'indigo',  
+                'light-blue', 'light-green', 'lime', 'orange', 'pink',  
+                'purple', 'red', 'teal', 'violet', 'yellow', 'white'
+            ].map(item => (<Tag color={item} key={item}> {item} </Tag>))} */}
+						<Tag color={getColor(record)}>{getColor(record)}</Tag>
+					</>
+				)
+			}
+		},
+		{
+			title: '状态',
+			dataIndex: 'type',
+			align:'center',
+			key: 'type',
+			render:(record)=>{
+				return(
+					<>
+						<Typography.Text strong={true} type={record==='ON'?'success':'danger'}>{record}</Typography.Text>
+					</>
+				)
+			}
 		},
 
 		{
@@ -70,51 +97,38 @@ const Index: React.FC = () => {
 	const data1 = [
 		{
 			key: 1,
-			name: '分类1',
-			depth: 0,
-			customOrder: 0,
-			parent:'',
-			deleteAt: null,
-			children: [
-				{
-					name: '分类1-1',
-					depth: 1,
-					parent:'1',
-					customOrder: 0,
-					deleteAt: null
-				},
-				{
-					name: '分类1-2',
-					depth: 1,
-					customOrder: 0,
-					deleteAt: null
-				}
-			]
+			title: '标签1',
+			summary: '啊擦撒内存空间拉萨',
+			color: 'blue',
+			type:'ON'
 		},
 		{
 			key: 2,
-			name: '分类2',
-			depth: 0,
-			customOrder: 0,
-			deleteAt: null,
-			children: [
-				{
-					key: 21,
-					name: '分类2-1',
-					depth: 0,
-					parent:'2',
-					customOrder: 0,
-					deleteAt: null
-				},
-				{
-					key: 22,
-					name: '分类2-2',
-					depth: 0,
-					parent:'2',
-					customOrder: 0,
-					deleteAt: null
-				}
-			]
+			title: '标签2',
+			summary: '啊擦撒内存空间拉萨',
+			color: 'cyan',
+			type:'ON'
+		},
+		{
+			key: 3,
+			title: '标签3',
+			summary: '啊擦撒内存空间拉萨',
+			color: 'grey',
+			type:'ON'
+		},
+		{
+			key: 4,
+			title: '标签4',
+			summary: '啊擦撒内存空间拉萨',
+			color: 'indigo',
+			type:'ON'
+		},
+		{
+			key: 5,
+			title: '标签5',
+			summary: '啊擦撒内存空间拉萨',
+			color: 'light-blue',
+			type:'OFF'
 		}
 	]
 
@@ -150,20 +164,7 @@ const Index: React.FC = () => {
 	}
 	const dealData = () => {
 		let flag = false
-		data.forEach((item) => {
-			if (item.deleteAt) {
-				flag = true
-				return
-			}
-			if (item.children.length > 0) {
-				item.children.forEach((it) => {
-					if (it.deleteAt) {
-						flag = true
-						return
-					}
-				})
-			}
-		})
+		flag=false
 		return !flag
 	}
 
@@ -191,8 +192,8 @@ const Index: React.FC = () => {
 				loading={loading}
 			/>
 
-			<ModalAddCategory visible={visibleAdd} setVisible={setVisibleAdd} selectList={selectList}></ModalAddCategory>
-			<ModalUpdateCategory visible={visibleUpdate} setVisible={setVisibleUpdate} selectList={selectList} initValues={updateData}></ModalUpdateCategory>
+			<ModalAddtag visible={visibleAdd} setVisible={setVisibleAdd} selectList={selectList}></ModalAddtag>
+			<ModalUpdatetag visible={visibleUpdate} setVisible={setVisibleUpdate} initValues={updateData}></ModalUpdatetag>
 		</>
 	)
 }

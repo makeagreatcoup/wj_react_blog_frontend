@@ -10,15 +10,21 @@ export const zhCN_menu = {
 	'app.menu.form.advanced': '高级表单',
 
 	'app.menu.blog':'博客管理',
-	'app.menu.blog.article':'文章管理',
-	'app.menu.blog.project':'项目管理',
+	'app.menu.blog.list':'文章列表',
+	'app.menu.blog.add':'发布新文章',
+
+	'app.menu.project':'项目管理',
+	'app.menu.project.list':'项目列表',
 
 	'app.menu.comment':'评论管理',
 	'app.menu.comment.article':'文章评论',
 	'app.menu.comment.project':'项目评论',
 
-	'app.menu.category':'标签管理',
-	'app.menu.category.list':'标签管理',
+	'app.menu.category':'分类管理',
+	'app.menu.category.list':'分类管理',
+
+	'app.menu.tag':'标签管理',
+	'app.menu.tag.list':'标签管理',
 
 	'app.menu.list': '列表页',
 	'app.menu.list.search': '搜索列表',

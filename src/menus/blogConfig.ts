@@ -46,41 +46,54 @@ const MENU_CONFIG: MenuItem[] = [
 		icon: IconEdit,
 		items: [
 			{
-				itemKey: '2-1',
-				text: 'app.menu.blog.article',
-				path: '/blog/article'
+				itemKey: '2-2',
+				text: 'app.menu.blog.add',
+				path: '/blog/add'
 			},
 			{
-				itemKey: '2-2',
-				text: 'app.menu.blog.project',
-				path: '/blog/project'
-			}
+				itemKey: '2-1',
+				text: 'app.menu.blog.list',
+				path: '/blog/list'
+			},
+
 		]
 	},
 	{
 		itemKey: '3',
+		text: 'app.menu.project',
+		icon: IconEdit,
+		items: [
+			{
+				itemKey: '3-1',
+				text: 'app.menu.project.list',
+				path: '/project/list'
+			}
+		]
+	},
+	{
+		itemKey: '4',
 		text: 'app.menu.comment',
 		icon: IconGridRectangle,
 		items: [
 			{
-				itemKey: '3-1',
+				itemKey: '4-1',
 				text: 'app.menu.comment.article',
 				path: '/comment/article'
 			},
 			{
-				itemKey: '3-2',
+				itemKey: '4-2',
 				text: 'app.menu.comment.project',
 				path: '/comment/project'
 			},
 		]
 	},
 	{
-		itemKey: '4',
+		itemKey: '5',
 		text: 'app.menu.category',
 		icon: IconApps,
 		items: [
 			{
-				itemKey: '4-1',
+				itemKey: '5-1',
 				text: 'app.menu.category.list',
 				path: '/category/list'
 			},
@@ -88,17 +101,30 @@ const MENU_CONFIG: MenuItem[] = [
 		]
 	},
 	{
-		itemKey: '5',
+		itemKey: '6',
+		text: 'app.menu.tag',
+		icon: IconApps,
+		items: [
+			{
+				itemKey: '6-1',
+				text: 'app.menu.tag.list',
+				path: '/tag/list'
+			},
+
+		]
+	},
+	{
+		itemKey: '7',
 		text: 'app.user',
 		icon: IconUser,
 		items: [
 			{
-				itemKey: '5-1',
+				itemKey: '7-1',
 				text: 'app.user.center',
 				path: '/user/center'
 			},
 			{
-				itemKey: '5-2',
+				itemKey: '7-2',
 				text: 'app.user.settings',
 				path: '/user/settings'
 			}

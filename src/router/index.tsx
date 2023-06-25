@@ -50,15 +50,19 @@ const routeList: RouteObject[] = [
 				path: 'dashboard/monitor',
 				element: <WrapperRouteComponent element={<DashboardMonitor />} titleId="监控页" auth />
 			},
-
 			{
-				path: 'blog/article',
-				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/article'))} titleId="文章管理" auth />
+				path: 'blog/list',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/list'))} titleId="文章列表" auth />
 
 			},
 			{
-				path: 'blog/project',
-				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/project'))} titleId="项目管理" auth />
+				path: 'blog/add',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/add'))} titleId="发布新文章" auth />
+
+			},
+			{
+				path: 'project/list',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/project/list'))} titleId="项目列表" auth />
 			},
 			{
 				path: 'comment/article',
@@ -71,7 +75,12 @@ const routeList: RouteObject[] = [
 			},
 			{
 				path: 'category/list',
-				element: <WrapperRouteComponent component={lazy(() => import('@/pages/category/list'))} titleId="标签管理" auth />
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/category/list'))} titleId="分类管理" auth />
+
+			},
+			{
+				path: 'tag/list',
+				element: <WrapperRouteComponent component={lazy(() => import('@/pages/tag/list'))} titleId="标签管理" auth />
 
 			},
 
