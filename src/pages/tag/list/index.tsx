@@ -58,9 +58,9 @@ const Index: React.FC = () => {
 		},
 		{
 			title: '状态',
-			dataIndex: 'type',
+			dataIndex: 'state',
 			align:'center',
-			key: 'type',
+			key: 'state',
 			render:(record)=>{
 				return(
 					<>
@@ -100,35 +100,35 @@ const Index: React.FC = () => {
 			title: '标签1',
 			summary: '啊擦撒内存空间拉萨',
 			color: 'blue',
-			type:'ON'
+			state:'ON'
 		},
 		{
 			key: 2,
 			title: '标签2',
 			summary: '啊擦撒内存空间拉萨',
 			color: 'cyan',
-			type:'ON'
+			state:'ON'
 		},
 		{
 			key: 3,
 			title: '标签3',
 			summary: '啊擦撒内存空间拉萨',
 			color: 'grey',
-			type:'ON'
+			state:'ON'
 		},
 		{
 			key: 4,
 			title: '标签4',
 			summary: '啊擦撒内存空间拉萨',
 			color: 'indigo',
-			type:'ON'
+			state:'ON'
 		},
 		{
 			key: 5,
 			title: '标签5',
 			summary: '啊擦撒内存空间拉萨',
 			color: 'light-blue',
-			type:'OFF'
+			state:'OFF'
 		}
 	]
 
