@@ -4,8 +4,7 @@ import { Button, Table, Popconfirm, Toast, Typography, Tag,Image, TagGroup } fro
 import { IconEdit, IconDelete } from '@douyinfe/semi-icons'
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import { getColor } from '@/utils/utils'
-import { error } from 'console'
-import { TagProps } from '@douyinfe/semi-ui/lib/es/tag'
+import PostSearch from '@/components/blog/search'
 
 const Index: React.FC = () => {
 	const [data, setData] = useState([])
@@ -30,13 +29,13 @@ const Index: React.FC = () => {
 		{
 			title: '标题',
 			dataIndex: 'title',
-			width: 300,
+			width: 200,
 			key: 'title'
 		},
 		{
 			title: '描述',
 			dataIndex: 'summary',
-			width: 300,
+			width: 200,
 			key: 'summary'
 		},
 		{
@@ -91,6 +90,7 @@ const Index: React.FC = () => {
 			dataIndex: 'publishedAt',
 			key: 'publishedAt',
       align:'center',
+      width:100,
       render:(record)=>{
 				return(
 					<>
@@ -104,6 +104,7 @@ const Index: React.FC = () => {
 			dataIndex: 'state',
 			align:'center',
 			key: 'state',
+      width:100,
 			render:(record)=>{
 				return(
 					<>
@@ -112,12 +113,20 @@ const Index: React.FC = () => {
 				)
 			}
 		},
+		{
+			title: '创建时间',
+			dataIndex: 'createdAt',
+      align:'center',
+      width:100,
+			key: 'createdAt'
+		},
 
 		{
 			title: '操作',
 			dataIndex: '',
 			key: '',
 			width: 200,
+      fixed: 'right',
 			align: 'center',
 			render: (text, record, index) => {
 				const content = record.children ? '该项还存在子项' : ''
@@ -136,7 +145,7 @@ const Index: React.FC = () => {
 			}
 		}
 	] as ColumnProps[]
-
+  const scroll = useMemo(() => ({ x: 1200 }), []);
   const srcList = useMemo(() => ([
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/abstract.jpg",
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/sky.jpg",
@@ -272,7 +281,8 @@ const Index: React.FC = () => {
         state:'OFF'
       }],
       publishedAt:''
-		}
+		},
+
 	]
 
 	const selectList = [
@@ -315,16 +325,17 @@ const Index: React.FC = () => {
 
 	return (
 		<>
-			<Button onClick={createData} type="primary" style={{ marginBottom: 10 }}>
+			{/* <Button onClick={createData} type="primary" style={{ marginBottom: 10 }}>
 				新增
 			</Button>
 			<Button type="warning" disabled={dealData()} style={{ marginBottom: 10, marginLeft: 10, display: trash }}>
 				回收站
-			</Button>
-
-			<Table
+			</Button> */}
+      <PostSearch></PostSearch>
+      <Table
 				columns={columns}
 				defaultExpandAllRows
+        style={{height:100}}
 				dataSource={data}
 				pagination={{
 					currentPage,
@@ -332,8 +343,11 @@ const Index: React.FC = () => {
 					total: data.length,
 					onPageChange: handlePageChange
 				}}
+        size='small'
+        scroll={scroll}
 				loading={loading}
 			/>
+			
 
 		</>
 	)

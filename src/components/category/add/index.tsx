@@ -2,9 +2,9 @@
 import React, { useState } from 'react'
 import { Modal, Form, useFormApi } from '@douyinfe/semi-ui'
 
-const FormApiComponent=({setFormApi,selectList,errmsg})=>{
-	const formApi=useFormApi()
-	
+const FormApiComponent = ({ setFormApi, selectList, errmsg }) => {
+	const formApi = useFormApi()
+
 	setFormApi(formApi)
 	return (
 		<>
@@ -22,63 +22,56 @@ const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 				placeholder="请输入分类名称"
 				rules={[{ required: true, message: errmsg }]}
 			></Form.Input>
-			<Form.InputNumber 
-			field='customOrder' 
-			label="文章排序优先级" 
-			initValue={0}
-			 style={{ width: 300 }}
+			<Form.InputNumber
+				field="customOrder"
+				label="文章排序优先级"
+				initValue={0}
+				style={{ width: 300 }}
 			></Form.InputNumber>
 		</>
 	)
 }
 
+const ModalAddCategory: React.FC<Record<any, any>> = ({ visible, setVisible, selectList }) => {
+	const [formApi, setFormApi] = useState(null)
+	const errmsg = '该项为必填项'
 
-const ModalAddCategory : React.FC<Record<any,any>> = ({visible,setVisible,selectList}) => {
-
-	const [formApi,setFormApi]=useState(null);
-	const errmsg='该项为必填项'
-
-  const handleSubmit = (values) => {
+	const handleSubmit = (values) => {
 		console.log(values)
 		setVisible(false)
 	}
-  const formValidate=(values)=>{
-    const errors={}as any
-    if(values.name==null){
-      errors.name=errmsg
-    }
-		if(Object.keys(errors).length === 0){
+	const formValidate = (values) => {
+		const errors = {} as any
+		if (values.name == null) {
+			errors.name = errmsg
+		}
+		if (Object.keys(errors).length === 0) {
 			return null
 		}
-    return errors
-  }
-	const onOk=()=>{
+		return errors
+	}
+	const onOk = () => {
 		formApi.submitForm()
-  };
+	}
 
-  return (
-    <Modal
-				title="新增"
-				visible={visible}
-				style={{ width: 400 }}
-				onOk={onOk}
-				onCancel={() => {
-					setVisible(false)
-				}}
-				okText={'确认'}
-				cancelText={'取消'}
-				maskClosable={false}
-			>
-				
-				<Form 
-					onSubmit={handleSubmit} 
-					validateFields={formValidate} 
-					style={{ width: 400 }}
-				>
-					<FormApiComponent setFormApi={setFormApi} selectList={selectList} errmsg={errmsg}></FormApiComponent>
-				</Form>
-			</Modal>
-  )
+	return (
+		<Modal
+			title="新增"
+			visible={visible}
+			style={{ width: 400 }}
+			onOk={onOk}
+			onCancel={() => {
+				setVisible(false)
+			}}
+			okText={'确认'}
+			cancelText={'取消'}
+			maskClosable={false}
+		>
+			<Form onSubmit={handleSubmit} validateFields={formValidate} style={{ width: 400 }}>
+				<FormApiComponent setFormApi={setFormApi} selectList={selectList} errmsg={errmsg}></FormApiComponent>
+			</Form>
+		</Modal>
+	)
 }
 
 export default ModalAddCategory

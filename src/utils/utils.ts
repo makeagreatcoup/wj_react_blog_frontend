@@ -2,6 +2,10 @@ export const getFirstWord = (str: string) => {
 	return str.charAt(0)
 }
 
+export const getRandomColor = ()=>{
+	const randomIndex = Math.floor(Math.random() * colorList.length);
+	return colorList[randomIndex]
+}
 export const getColor = (color) => {
 	if (colorList.includes(color)
 	) {
@@ -11,7 +15,7 @@ export const getColor = (color) => {
   }
 }
 export const colorList= [
-		'white',
+		// 'white',
 		'amber',
 		'blue',
 		'cyan',

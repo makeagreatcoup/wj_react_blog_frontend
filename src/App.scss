@@ -14,3 +14,9 @@ body,
 		align-items: center;
 	}
 }
+.layout-page .layout-content > :last-child{
+	height: auto;
+}
+.semi-form-horizontal .semi-form-field:last-child{
+	margin-right: 0;
+}

@@ -14,9 +14,9 @@ const Index: React.FC = () => {
 	return (
 		<Layout className="layout-page">
 			<Sider />
-			<Layout>
+			<Layout style={{overflow:'hidden'}}>
 				<Header />
-				<Content className="layout-content">
+				<Content className="layout-content" style={{overflow:'auto'}}>
 					<Suspense fallback={<SuspendFallbackLoading message="正在加载中" />}>
 						<Outlet />
 					</Suspense>

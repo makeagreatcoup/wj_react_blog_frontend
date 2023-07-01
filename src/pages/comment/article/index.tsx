@@ -6,7 +6,7 @@ import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import ModalAddComment from '@/components/comment/add'
 import ModalUpdateComment from '@/components/comment/update'
 import CommentSearchForm from '@/components/comment/search'
-import { getFirstWord } from '@/utils/utils'
+import { getFirstWord, getRandomColor } from '@/utils/utils'
 import Label from '@douyinfe/semi-ui/lib/es/form/label'
 
 const Index: React.FC = () => {
@@ -53,7 +53,7 @@ const Index: React.FC = () => {
       render:(record)=>{
         return(
           <>
-            <Avatar style={{ margin: 4 }} alt={record.customer.nickname}>{getFirstWord(record.customer.nickname)}</Avatar>
+            <Avatar color={record.customer.color?record.customer.color:getRandomColor()} style={{ margin: 4 }} alt={record.customer.nickname}>{getFirstWord(record.customer.nickname)}</Avatar>
             <Label>{record.customer.nickname}</Label>
           </>
         )
@@ -106,7 +106,8 @@ const Index: React.FC = () => {
         title:'就爱看clans流程'
       },
       customer:{
-        nickname:'王得到'
+        nickname:'王得到',
+				color:''
       },
       body:'爱吹牛四川拿骚萨斯开始',
 			children: [
@@ -291,7 +292,7 @@ const Index: React.FC = () => {
 		<>
 			
       <div style={{marginBottom:20,justifyContent:'space-between'}}>
-        <CommentSearchForm options={options}></CommentSearchForm>
+        <CommentSearchForm></CommentSearchForm>
       </div>
       <ButtonGroup>
           <Button onClick={createData} type="primary" style={{ marginBottom: 10 }}>

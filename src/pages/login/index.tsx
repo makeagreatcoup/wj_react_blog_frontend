@@ -1,7 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import Footer from '../layout/components/footer';
 
-const Index: React.FC = () => {
-	return <div>空白页</div>
-}
+export default () => {
 
-export default Index
+  return (
+    <div>
+      <div>
+        <div>博客后台管理系统</div>
+      </div>
+      <div>
+        <div>
+        </div>
+      </div>
+      <div>
+        <div>
+        </div>
+        <div>
+          <Footer />
+        </div>
+      </div>
+    </div>
+  );
+};

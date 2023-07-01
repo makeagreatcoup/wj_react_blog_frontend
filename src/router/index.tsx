@@ -58,7 +58,6 @@ const routeList: RouteObject[] = [
 			{
 				path: 'blog/add',
 				element: <WrapperRouteComponent component={lazy(() => import('@/pages/blog/add'))} titleId="发布新文章" auth />
-
 			},
 			{
 				path: 'project/list',
