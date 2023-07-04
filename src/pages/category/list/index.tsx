@@ -23,6 +23,7 @@ const Index: React.FC = () => {
 	}
 	const onUpdate=(record)=>{
 		setVisibleUpdate(true)
+		console.log(record)
 		setUpdateData(record)
 	}
 	const columns = [

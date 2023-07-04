@@ -12,6 +12,7 @@ export const zhCN_menu = {
 	'app.menu.blog':'博客管理',
 	'app.menu.blog.list':'文章列表',
 	'app.menu.blog.add':'发布新文章',
+	'app.menu.blog.update':'修改文章',
 
 	'app.menu.project':'项目管理',
 	'app.menu.project.list':'项目列表',

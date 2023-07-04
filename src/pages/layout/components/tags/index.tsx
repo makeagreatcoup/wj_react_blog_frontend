@@ -24,7 +24,7 @@ const Index: FC = () => {
 		const tag = tags.find((tag) => tag.id === key)
 		if (tag) {
 			setCurrentTag(tag.id)
-			navigate(tag.path)
+			navigate(tag.path,{state:location.state})
 		}
 	}
 	const setCurrentTag = useCallback(
@@ -78,7 +78,7 @@ const Index: FC = () => {
 	useEffect(() => {
 		if (tags && activeTagId) {
 			const targetTab = tags.filter((e) => e.id === activeTagId)
-			navigate(targetTab[0].path)
+			navigate(targetTab[0].path,{state:location.state})
 		}
 	}, [tags, activeTagId])
 

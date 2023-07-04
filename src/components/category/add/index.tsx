@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi } from '@douyinfe/semi-ui'
 
 const FormApiComponent = ({ setFormApi, selectList, errmsg }) => {
 	const formApi = useFormApi()
 
-	setFormApi(formApi)
+	useEffect(() => {
+    setFormApi(formApi);
+  }, [formApi]);
 	return (
 		<>
 			<Form.Select

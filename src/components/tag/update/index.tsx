@@ -1,12 +1,14 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi, Tag } from '@douyinfe/semi-ui'
 import { colorList } from '@/utils/utils'
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag'
 
 const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 	const formApi=useFormApi()
-	setFormApi(formApi)
+	useEffect(() => {
+    setFormApi(formApi);
+  }, [formApi]);
 	return (
 		<>
 			<Form.Input

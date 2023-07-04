@@ -5,25 +5,27 @@ import { IconEdit, IconDelete } from '@douyinfe/semi-icons'
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import { getColor } from '@/utils/utils'
 import PostSearch from '@/components/blog/search'
+import { useNavigate  } from 'react-router-dom';
+
 
 const Index: React.FC = () => {
+
+	const history = useNavigate();
 	const [data, setData] = useState([])
 	const [loading, setLoading] = useState(false)
 	const [currentPage, setPage] = useState(1)
-	const [updateData,setUpdateData]=useState({})
 	// 是否开启软删除
 	const [trash, setTrash] = useState('none')
 
-	const [visibleAdd, setVisibleAdd] = useState(false)
-	const [visibleUpdate, setVisibleUpdate] = useState(false)
 	const pageSize = 10
 
 	const onDeleteConfirm = () => {
 		Toast.success('删除成功')
 	}
 	const onUpdate=(record)=>{
-		setVisibleUpdate(true)
-		setUpdateData(record)
+		console.log(record)
+		console.log(1)
+		history('/blog/update',{state:record})
 	}
 	const columns = [
 		{
@@ -61,10 +63,10 @@ const Index: React.FC = () => {
 		},
 		{
 			title: '所属分类',
-			dataIndex: 'type',
+			dataIndex: 'category',
       align:'center',
       width:100,
-			key: 'type'
+			key: 'category'
 		},
 		{
 			title: '标签',
@@ -159,16 +161,17 @@ const Index: React.FC = () => {
 			summary: '啊擦撒内存空间拉萨',
 			cover: srcList[0],
 			state:'ON',
-      type:'分类1',
+      category:'分类1',
+			body:'今天有个大新闻啊1<br>是啊是啊',
       tags:[{
-        key: 1,
+        key: '1',
         title: '标签1',
         summary: '啊擦撒内存空间拉萨',
         color: 'blue',
         state:'ON'
       },
       {
-        key: 2,
+        key: '2',
         title: '标签2',
         summary: '啊擦撒内存空间拉萨',
         color: 'cyan',
@@ -182,10 +185,11 @@ const Index: React.FC = () => {
 			summary: '啊擦撒内存空间拉萨',
 			cover: srcList[1],
 			state:'ON',
-      type:'分类1',
+			body:'今天有个大新闻啊2<br>是啊是啊',
+      category:'分类1',
       tags:[
       {
-        key: 3,
+        key: '3',
         title: '标签3',
         summary: '啊擦撒内存空间拉萨',
         color: 'grey',
@@ -198,17 +202,18 @@ const Index: React.FC = () => {
 			title: '标签3',
 			summary: '啊擦撒内存空间拉萨',
 			cover: srcList[2],
+			body:'今天有个大新闻啊3<br>是啊是啊',
 			state:'ON',
-      type:'分类1',
+      category:'分类1',
       tags:[{
-        key: 3,
+        key: '3',
         title: '标签3',
         summary: '啊擦撒内存空间拉萨',
         color: 'grey',
         state:'ON'
       },
       {
-        key: 4,
+        key: '4',
         title: '标签4',
         summary: '啊擦撒内存空间拉萨',
         color: 'indigo',
@@ -219,12 +224,13 @@ const Index: React.FC = () => {
 		{
 			key: 4,
 			title: '标签4',
+			body:'今天有个大新闻啊4<br>是啊是啊',
 			summary: '啊擦撒内存空间拉萨',
 			cover: srcList[3],
 			state:'ON',
-      type:'分类1',
+      category:'分类1',
       tags:[{
-        key: 4,
+        key: '4',
         title: '标签4',
         summary: '啊擦撒内存空间拉萨',
         color: 'indigo',
@@ -232,7 +238,7 @@ const Index: React.FC = () => {
         publishedAt:''
       },
       {
-        key: 5,
+        key: '5',
         title: '标签5',
         summary: '啊擦撒内存空间拉萨',
         color: 'light-blue',
@@ -245,36 +251,37 @@ const Index: React.FC = () => {
 			summary: '啊擦撒内存空间拉萨',
 			cover: srcList[3],
 			state:'OFF',
-      type:'分类1',
+      category:'分类1',
+
       tags:[{
-        key: 1,
+        key: '1',
         title: '标签1',
         summary: '啊擦撒内存空间拉萨',
         color: 'blue',
         state:'ON'
       },
       {
-        key: 2,
+        key: '2',
         title: '标签2',
         summary: '啊擦撒内存空间拉萨',
         color: 'cyan',
         state:'ON'
       },{
-        key: 3,
+        key: '3',
         title: '标签3',
         summary: '啊擦撒内存空间拉萨',
         color: 'grey',
         state:'ON'
       },
       {
-        key: 4,
+        key: '4',
         title: '标签4',
         summary: '啊擦撒内存空间拉萨',
         color: 'indigo',
         state:'ON'
       },
       {
-        key: 5,
+        key: '5',
         title: '标签5',
         summary: '啊擦撒内存空间拉萨',
         color: 'light-blue',
@@ -312,9 +319,7 @@ const Index: React.FC = () => {
 	useEffect(() => {
 		fetchData()
 	}, [])
-	const createData = () => {
-		setVisibleAdd(true)
-	}
+
 	const dealData = () => {
 		let flag = false
 		flag=false

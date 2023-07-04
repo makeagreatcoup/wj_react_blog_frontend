@@ -17,6 +17,7 @@ import echarts from '@/common/echarts'
 import ReactEChartsCore from 'echarts-for-react/lib/core'
 import { anlyanisAccessOption, anlyanisPayOption, anlyanisSalesOption } from '@/common/echart-option'
 import './index.scss'
+import { useLocation } from 'react-router-dom'
 
 const { Item } = Descriptions
 const { Title } = Typography
@@ -57,7 +58,6 @@ const Index: React.FC = () => {
 	const [secondCardActiveTab, setSecondCardActiveTab] = useState('1')
 
 	setTimeout(() => setLoading(false), 1000)
-
 	return (
 		<div className="anlyanis-container">
 			<div className="anlyanis-container-top-card">

@@ -1,44 +1,71 @@
 /* eslint-disable no-console */
-import BlogSwitch from '@/components/common/BlogSwitch'
-import { Button, Col, DatePicker, Form, Input, Row, TabPane, Tabs, Tag, TextArea, Typography } from '@douyinfe/semi-ui'
-import React, { useState } from 'react'
+import { Button, Col, Form, Row, TabPane, Tabs, Tag, Toast, Typography } from '@douyinfe/semi-ui'
+import React, { useEffect, useState } from 'react'
 
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag'
 import UploadFile from '@/components/common/Upload'
 import ForEditor from '@/components/common/ForEditor'
 
+import { errorMsg } from '@/utils/utils'
+import { ValidateStatus } from '@douyinfe/semi-ui/lib/es/input'
+import { useLocation } from 'react-router-dom'
 
 const Index = () => {
+  const location=useLocation();
+  const {state}=location;
+  const [formValue,initFormValue] = useState({})
+  const [open, setOpen] = useState(false)
+
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [fileUrl,setFileUrl] =useState('')
+  const [html,setHtml]=useState('')
+  const [fileActiveKey,setFileActiveKey]=useState('1')
+
+  const [validateStatus, setValidateStatus] = useState("default" as ValidateStatus);
+  console.log(location)
+  useEffect(()=>{
+    console.log(state)
+    if(state){
+      console.log(state)
+      initFormValue(state)
+    }
+  },[])
 	const onSubmit = (values) => {
 		console.log(values)
+    values.cover=fileUrl;
+    values.body=html;
+    values.type="html";
+    values.publishedAt=values.publishStatus?new Date():null
+
+    if(!values.title){
+      Toast.error(errorMsg[0])
+      return;
+    }
+    if(!values.body){
+      Toast.error(errorMsg[1])
+      return;
+    }
+    setSaveLoading(true)
+    setTimeout(()=>{
+      console.log(values)
+      setSaveLoading(false)
+    },3000)
 	}
-	const onReset = (formApi) => {
-		formApi.reset()
-		setDataValueArr([])
-		formApi.setValue('createAt', [])
-		// form.resetFields();
-		// fetchData();
-	}
-	const onChangeDate = (formApi, e) => {
-		setDataValueArr(e)
-		formApi.setValue('createAt', e)
-	}
+  const validate=(val,values)=>{
+    if(!val){
+      setValidateStatus("warning")
+    }else{
+      setValidateStatus("success")
+    }
+    return '';
+  }
+
 
 	const onChangeSwitch = () => {
 		return setOpen(!open)
 	}
 
-	const [list, updateList] = useState([])
 
-	const [dataValueArr, setDataValueArr] = useState([])
-	const [open, setOpen] = useState(false)
-
-  const [saveLoading, setSaveLoading] = useState(false);
-
-
-	const getWidthStyle = {}
-	const getDatePickerWidthStyle = { width: 400 }
-	const allParam = []
 
 	const categoriesArr = [
 		{
@@ -94,24 +121,17 @@ const Index = () => {
 		{ key: '3', value: '3', label: '标签3', color: 'cyan' },
 		{ key: '4', value: '4', label: '标签4', color: 'green' }
 	]
-	const statusOptions = [
-		{ key: '1', value: 'ON', label: 'ON' },
-		{ key: '2', value: 'OFF', label: 'OFF' }
-	]
-	const publishStatusOptions = [
-		{ key: '1', value: '1', label: '已发布' },
-		{ key: '2', value: '2', label: '未发布' }
-	]
+
 	return (
 		<>
-			<Form layout="horizontal" onSubmit={onSubmit}>
+			<Form layout="horizontal" onSubmit={onSubmit} initValues={formValue}>
 				{({ formState, values, formApi }) => (
 					<>
 						<Row style={{ width: '100%' }}>
 							<Col span={12}>
 								<Row gutter={[8, 8]}>
 									<Col>
-										<Form.Input style={getWidthStyle} field="title" label="标 题" placeholder="请输入文章标题" />
+										<Form.Input field="title" label="标 题" placeholder="请输入文章标题" validate={validate} validateStatus={validateStatus}/>
 									</Col>
 									<Col>
 										<Form.TextArea
@@ -123,7 +143,7 @@ const Index = () => {
 										/>
 									</Col>
 									<Col>
-										<Form.TagInput style={getWidthStyle} field="title" label="关键字" placeholder="请输入文章关键字" />
+										<Form.TagInput field="keywords" label="关键字" placeholder="请输入文章关键字" />
 									</Col>
 									<Col span={12}>
 										<Row gutter={[8, 8]}>
@@ -174,9 +194,9 @@ const Index = () => {
 										<Typography.Title heading={6} style={{ fontSize: 14 }}>
 											封面
 										</Typography.Title>
-										<Tabs type="button">
+										<Tabs type="button" activeKey={fileActiveKey} onChange={setFileActiveKey}>
 											<TabPane tab="传文件" itemKey="1">
-												<UploadFile fileUrl={(e)=>{console.log(e)}}></UploadFile>
+												<UploadFile fileUrl={(e)=>{setFileUrl(e)}}></UploadFile>
 											</TabPane>
 											<TabPane tab="填网址" itemKey="2">
 												<Form.Input field="cover" noLabel />
@@ -186,11 +206,11 @@ const Index = () => {
 								</Row>
 							</Col>
 							<Col span={12} style={{height:'100%'}}>
-                <div style={{height:'90%',overflow:'scroll'}}>
-                  <ForEditor />
+                <div style={{height:'90%'}}>
+                  <ForEditor initHtml='' htmlCallback={(html)=>{setHtml(html)}}/>
                 </div>
                 <div style={{height:'10%',display:'flex',flexWrap:'wrap',alignContent:'flex-end',justifyContent:'flex-end'}}>
-                  <Button loading={saveLoading} onClick={() => setSaveLoading(true)} >保存并重置</Button>
+                  <Button htmlType="submit" loading={saveLoading}  >保存并重置</Button>
                 </div>
 							</Col>
 						</Row>

@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-import React from 'react'
 import { initializeApp } from "firebase/app";
-import { deleteObject, getDownloadURL, getMetadata, getStorage ,ref, uploadBytes, uploadBytesResumable} from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 // import { v4 as uuidv4 } from 'react-uuid';
 
 
@@ -18,7 +17,7 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 
-export const uploadFile = (file, fileType = 'images', progressCallback) => {
+export const uploadFile = (file, fileType = 'images', progressCallback?) => {
   return new Promise((resolve, reject) => {
     const storageRef = ref(storage, fileType);
     const fileRef = ref(storageRef, file.name);

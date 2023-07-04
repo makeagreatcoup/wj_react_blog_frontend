@@ -34,7 +34,7 @@ function findMenuByPath(menus: MenuItem[], path: string, keys: any[]): any {
 
 const Index: FC = () => {
 	const navigate = useNavigate()
-	const { pathname } = useLocation()
+	const { pathname,state } = useLocation()
 	const { formatMessage } = useLocale()
 	const [openKeys, setOpenKeys] = useState<string[]>([])
 	const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -42,12 +42,14 @@ const Index: FC = () => {
 
 	const navList = useMemo(() => {
 		return menuList.map((e) => {
+			if(e.disabled)return{style:{display:'none'}}
 			return {
 				...e,
 				text: formatMessage({ id: e.text }),
 				icon: e?.icon ? renderIcon(e.icon) : null,
 				items: e?.items
 					? e.items.map((m) => {
+						if(m.disabled){return{style:{display:'none'}}}
 							return {
 								...m,
 								text: formatMessage({ id: m.text }),
@@ -61,7 +63,7 @@ const Index: FC = () => {
 
 	const onSelect = (data) => {
 		setSelectedKeys([...data.selectedKeys])
-		navigate(data.selectedItems[0].path as string)
+		navigate(data.selectedItems[0].path as string,{state:state})
 	}
 	const onOpenChange = (data) => {
 		setOpenKeys([...data.openKeys])

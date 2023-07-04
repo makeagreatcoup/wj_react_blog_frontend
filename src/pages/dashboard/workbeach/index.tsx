@@ -9,6 +9,7 @@ import useStore from '@/store/dashboard/workbeach'
 import { useLoading } from '@/hooks/useLoading'
 import { workbeachOption } from '@/common/echart-option'
 import './index.scss'
+import { useNavigate } from 'react-router-dom'
 
 const { Meta } = Card
 const { Text } = Typography
@@ -18,7 +19,7 @@ const Index: React.FC = () => {
 	const headerData = useStore((state) => state.headerData)
 	const inProcessData = useStore((state) => state.inProcessData)
 	const recentActivityData = useStore((state) => state.recentActivityData)
-
+	const navigate = useNavigate()
 	const getWorkBeachData = useStore((state) => state.getWorkBeachData)
 
 	const formatHeaderData = useMemo(() => {
@@ -87,7 +88,7 @@ const Index: React.FC = () => {
 								className={loading ? '' : 'workbeach-container-content-left1-card'}
 								bordered={false}
 								loading={loading}
-								headerExtraContent={<Text link>全部项目</Text>}
+								headerExtraContent={<Text link onClick={()=>navigate('/dashboard/anlyanis',{state:{type:1}})}>全部项目</Text>}
 							>
 								<CardGroup type="grid">
 									{inProcessData.map((v, idx) => (

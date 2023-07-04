@@ -14,6 +14,7 @@ export interface MenuItem {
 	icon?: React.ReactNode
 	path?: string
 	items?: MenuItem[]
+	disabled?:boolean
 	component?: React.ComponentType<any>
 }
 
@@ -55,7 +56,12 @@ const MENU_CONFIG: MenuItem[] = [
 				text: 'app.menu.blog.list',
 				path: '/blog/list'
 			},
-
+			{
+				itemKey: '2-3',
+				text: 'app.menu.blog.update',
+				path: '/blog/update',
+				disabled:true
+			},
 		]
 	},
 	{

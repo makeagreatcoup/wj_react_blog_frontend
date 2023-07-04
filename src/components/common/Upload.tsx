@@ -9,7 +9,6 @@ const UploadFile = ({fileUrl}) => {
   const [success, setSuccess]=useState(false)
   const [percent, setPercent] = useState(0)
 
-
 	const fileCallback = (file) => {
     console.log(file)
 		uploadFile(file, undefined, (process) => {
