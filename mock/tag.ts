@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { MockMethod } from 'vite-plugin-mock'
 export default [
 	{
@@ -31,3 +32,25 @@ export default [
 		}
 	}
 ] as MockMethod[]
+
+// const Mock = require('mockjs');
+
+// const tagMockData = Mock.mock({
+//   'id|+1': 1,
+//   title: '@ctitle(3, 5)',
+//   summary: '@cparagraph(1)',
+//   posts: [
+//     {
+//       id: '@integer(1, 10)',
+//       // Include relevant fields from the PostEntity here
+//     },
+//     {
+//       id: '@integer(1, 10)',
+//       // Include relevant fields from the PostEntity here
+//     },
+//   ],
+//   color: '@color',
+//   state: '@pick(["ON", "OFF"])',
+// });
+
+// console.log(tagMockData);

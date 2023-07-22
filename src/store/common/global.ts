@@ -1,6 +1,6 @@
 import { getLocalStorage } from '@/utils/storage'
 import create from 'zustand'
-
+import useGlobalStore from '../useGlobalStore'
 export interface GlobalState {
 	locale: 'zh_CN' | 'en_GB'
 	loading: boolean
@@ -8,6 +8,8 @@ export interface GlobalState {
 	changeLocale: (val: 'zh_CN' | 'en_GB') => void
 }
 
+// const st=useGlobalStore(s=>s.updateUser)
+// st({name:'',permissions:['','']})
 const store = create<GlobalState>((set, get) => ({
 	locale: (getLocalStorage('semi_locale') as 'zh_CN' | 'en_GB') || 'zh_CN',
 	loading: false,

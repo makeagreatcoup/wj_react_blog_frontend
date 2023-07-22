@@ -13,10 +13,43 @@ body,
 		justify-content: space-between;
 		align-items: center;
 	}
+	.flex-around {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+	}
 }
 .layout-page .layout-content > :last-child{
 	height: auto;
 }
 .semi-form-horizontal .semi-form-field:last-child{
 	margin-right: 0;
+}
+
+.signUpButton {
+  position: relative;
+}
+
+// .signUpButton::after {
+// 	content: "";
+// 	position: absolute;
+// 	left: 12px;
+// 	bottom: 2px;
+// 	width: 50%;
+// 	height: 1px;
+// 	background-color: var(--semi-color-primary);
+// }
+.signUpButton::before{
+	content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 12px; /* 下划线起始位置在文本中间 */
+    width: 50%;
+    height: 1px; /* 下划线高度 */
+    background-color: var(--semi-color-primary); /* 下划线颜色 */
+    transition: all 0.5s ease; /* 过渡动画效果 */
+}
+.signUpButton:hover::before {
+	width: 0; /* 下划线宽度变为100%（整个文本宽度） */
+	left: 50%; /* 下划线起始位置在文本最左边 */
 }

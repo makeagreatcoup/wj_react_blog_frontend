@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { MockMethod } from 'vite-plugin-mock'
 export default [
 	{
@@ -31,3 +32,24 @@ export default [
 		}
 	}
 ] as MockMethod[]
+
+// const Mock = require('mockjs');
+
+// // 生成 CommentEntity 的 Mock 数据
+// const commentMockData = Mock.mock({
+//   'body': '@cparagraph',
+//   'depth': 0,
+//   'post': {
+//     'id|+1': 1,
+//     // Include relevant fields from the PostEntity here
+//   },
+//   'customer': {
+//     'id|+1': 1,
+//     'nickname': '@cname',
+//     // Include relevant fields from the CustomerEntity here
+//   },
+//   'parent': null, // Set parent to null for now
+//   'children': [],
+// });
+
+// console.log(commentMockData);

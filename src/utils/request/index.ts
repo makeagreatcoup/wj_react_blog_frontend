@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import systemConfig from '@/config'
 import axios, { AxiosRequestConfig } from 'axios'
 import { errorMsg, handleCommonError, handleNoCommontError } from './errorHandle'
@@ -14,7 +15,7 @@ type requestOptions = AxiosRequestConfig & {
 
 const { apiPrefix, authKey } = systemConfig
 const baseUrl = import.meta.env.VITE_BASE_API
-const basePrefix = import.meta.env.MODE === 'development' ? apiPrefix : ''
+const basePrefix = import.meta.env.MODE === 'dev' ? apiPrefix : ''
 const { toogleLoading } = getState()
 
 // 拦截器
@@ -26,6 +27,7 @@ axios.interceptors.response.use(
 	},
 	// 错误拦截
 	(error) => {
+		console.log(error)
 		const { response } = error
 		toogleLoading(false)
 		// 请求有响应
@@ -52,11 +54,11 @@ axios.interceptors.response.use(
 )
 
 // request
-export default async function request(options: requestOptions) {
+export default async function request(options: requestOptions,mock?:boolean) {
 	const { url } = options
 	delete options.url
-
 	const Authorization = getLocalStorage(authKey)
+	console.log(Authorization)
 	let headers = {}
 	if (options) {
 		headers = options.headers || {}
@@ -71,6 +73,7 @@ export default async function request(options: requestOptions) {
 		credentials: 'include',
 		timeout: 10000,
 		withCredentials: true,
+		crossDomain: true,
 		validateStatus(status: any) {
 			return status >= 200 && status < 300
 		}
@@ -79,8 +82,7 @@ export default async function request(options: requestOptions) {
 		delete options.headers
 	}
 	const newOptions: requestOptions = { ...defaultOptions, ...options }
-
-	newOptions.data = newOptions.body
+	// newOptions.data = newOptions.body
 	if (newOptions.method === 'get') {
 		newOptions.paramsSerializer = (params) => {
 			return qs.stringify(params, { arrayFormat: 'repeat' })
@@ -88,7 +90,10 @@ export default async function request(options: requestOptions) {
 	}
 	delete newOptions.body
 	toogleLoading(true)
-	const newUrl = (basePrefix || baseUrl) + url
-
+	let preUrl=baseUrl;
+	if(mock){
+		preUrl='http://localhost:3001'
+	}
+	const newUrl = preUrl+basePrefix + url
 	return axios(newUrl, newOptions)
 }

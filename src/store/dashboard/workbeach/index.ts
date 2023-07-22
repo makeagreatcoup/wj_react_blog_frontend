@@ -17,7 +17,7 @@ const useStore = create<workBeachState>((set, get) => ({
 		const res = await request({
 			url: `/workbeach`,
 			method: 'get'
-		})
+		},true)
 		const { headerData, inProcessData, recentActivityData } = res.data
 		set({
 			headerData,

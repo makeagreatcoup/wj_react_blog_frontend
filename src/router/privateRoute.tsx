@@ -2,13 +2,13 @@ import React, { FC } from 'react'
 import { Navigate } from 'react-router-dom'
 import { RouteProps, useLocation } from 'react-router'
 import Empty from '@/components/empty'
-// import useStore from '@/stores/user'
+import useStore from '@/store/user'
 
 const PrivateRoute: FC<RouteProps> = (props) => {
 	const location = useLocation()
 	const { pathname } = location
-	// const logged = useStore((state) => state.logged)
-	const logged = true // 这里做登录验证
+	const logged = useStore((state) => state.logged)
+	// const logged = true // 这里做登录验证
 
 	return logged ? (
 		pathname === '/' ? (

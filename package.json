@@ -2,7 +2,7 @@
   "name": "wj_react_blog_frontend",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode=dev",
     "start": "vite",
     "preview": "vite preview",
     "build:dev": "tsc && vite build --mode dev",
