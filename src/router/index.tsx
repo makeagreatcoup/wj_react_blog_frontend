@@ -1,10 +1,11 @@
-import React, { lazy, FC, ComponentType, Suspense } from 'react'
+import React, { lazy, FC, ComponentType, Suspense, useEffect } from 'react'
 import { RouteObject } from 'react-router'
 import { useRoutes } from 'react-router-dom'
 import { WrapperRouteComponent, WrapperRouteWithOutLayoutComponent } from './config'
 import LoginPage from '@/pages/login'
 import LayoutPage from '@/pages/layout'
 import Empty from '@/components/empty'
+import userStateStore, { loginDataName } from '@/store/user'
 
 const DashboardWorkbeach = lazy(() => import('@/pages/dashboard/workbeach'))
 const DashboardAnlyanis = lazy(() => import('@/pages/dashboard/anlyanis'))
@@ -173,6 +174,13 @@ const routeList: RouteObject[] = [
 ]
 
 const RenderRouter: FC = () => {
+	// 初始加载login登录数据，避免刷新时重置登录状态
+	useEffect(() => {
+		const data = localStorage.getItem(loginDataName);
+		if (data) {
+			userStateStore.setState(JSON.parse(data).value);
+		} 
+	}, []);
 	const element = useRoutes(routeList)
 	return element
 }

@@ -8,6 +8,7 @@ const PrivateRoute: FC<RouteProps> = (props) => {
 	const location = useLocation()
 	const { pathname } = location
 	const logged = useStore((state) => state.logged)
+	const token = useStore((state)=>state.token)
 	// const logged = true // 这里做登录验证
 
 	return logged ? (

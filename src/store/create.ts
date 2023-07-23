@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import _create from 'zustand';
 import { persist } from 'zustand/middleware'
 
@@ -6,33 +7,61 @@ type Actions<T> ={
 }
 const resetters: (() => void)[] = []
 
-const create = <State,A=object>(initialState,extraActions?)=>{
-  // const store=_create<State & Actions<State> & A>(
-  //   (set,get)=>({
-  //   ...initialState,
-  //   ...Object.keys(initialState).reduce((total,key)=>{
-  //     const functionName=`set${key[0].toUpperCase()}${key.slice(1)}`
-  //     total[functionName] = (value:State[keyof State]) => set({...total, [key]: value })
-  //     return total
-  //   },{}),
-  //   ...(extraActions?extraActions(set,get):{})
-  // }))
-  const store=_create<State & Actions<State> & A>(
-    persist((
+const zustandStorage = localStorage; 
+
+const getStorage=(persistName)=>{
+  const storage = zustandStorage;
+   console.log(persistName)
+   const data = storage.getItem(persistName);
+  console.log(data)
+  if (data) {
+    const { expire, value } = JSON.parse(data);
+    const now = Date.now();
+    if (expire && now >= expire) {
+      // 已过期,不返回
+      return undefined;
+    } else {
+      console.log(value)
+      return value;
+    }
+  }
+  return undefined
+}
+
+const create = <State,A=object>(initialState,extraActions?,persistName?)=>{
+  let store
+  if(persistName){
+    // 持久化
+    store=_create<State & Actions<State> & A>(
+      persist((
+        (set,get)=>({
+            ...initialState,
+            ...Object.keys(initialState).reduce((total,key)=>{
+              const functionName=`set${key[0].toUpperCase()}${key.slice(1)}`
+              total[functionName] = (value:State[keyof State]) => set({...total, [key]: value })
+              return total
+            },{}),
+            ...(extraActions?extraActions(set,get):{})
+          })
+      ),{
+        name: persistName, 
+        getStorage: getStorage(persistName),
+
+    })
+    )
+  }else{
+    store=_create<State & Actions<State> & A>(
       (set,get)=>({
-          ...initialState,
-          ...Object.keys(initialState).reduce((total,key)=>{
-            const functionName=`set${key[0].toUpperCase()}${key.slice(1)}`
-            total[functionName] = (value:State[keyof State]) => set({...total, [key]: value })
-            return total
-          },{}),
-          ...(extraActions?extraActions(set,get):{})
-        })
-    ),{
-      name: 'root', 
-      getStorage:()=>localStorage
-  })
-  )
+      ...initialState,
+      ...Object.keys(initialState).reduce((total,key)=>{
+        const functionName=`set${key[0].toUpperCase()}${key.slice(1)}`
+        total[functionName] = (value:State[keyof State]) => set({...total, [key]: value })
+        return total
+      },{}),
+      ...(extraActions?extraActions(set,get):{})
+    }))
+  }
+
   resetters.push(() => {
     store.setState(initialState)
   })
