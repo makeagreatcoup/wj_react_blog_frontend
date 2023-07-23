@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import _create from 'zustand';
 import { persist } from 'zustand/middleware'
 
@@ -11,9 +10,7 @@ const zustandStorage = localStorage;
 
 const getStorage=(persistName)=>{
   const storage = zustandStorage;
-   console.log(persistName)
-   const data = storage.getItem(persistName);
-  console.log(data)
+  const data = storage.getItem(persistName);
   if (data) {
     const { expire, value } = JSON.parse(data);
     const now = Date.now();
@@ -21,7 +18,6 @@ const getStorage=(persistName)=>{
       // 已过期,不返回
       return undefined;
     } else {
-      console.log(value)
       return value;
     }
   }

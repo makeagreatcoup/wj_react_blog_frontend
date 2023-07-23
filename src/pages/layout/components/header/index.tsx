@@ -5,11 +5,15 @@ import Breadcrumb from '../breadcrumb'
 import useStore from '@/store/common/global'
 import Tags from '../tags'
 import '../../index.scss'
+import userStateStore from '@/store/user'
+import { useNavigate } from 'react-router-dom'
 
 const { Header } = Layout
 
 const Index: FC = () => {
 	const locale = useStore((state) => state.locale)
+	const { updateLoginState } = userStateStore(state => state);
+	const navigate = useNavigate();
 	const changeLocale = useStore((state) => state.changeLocale)
 
 	const selectLocale = (locale: 'zh_CN' | 'en_GB') => {
@@ -19,6 +23,13 @@ const Index: FC = () => {
 
 	const question = () => {
 		window.open('https://github.com/xieyezi/semi-design-pro/issues')
+	}
+	const logout = () =>{
+		navigate('/login', { replace: true })
+		updateLoginState({
+			logged: false,
+			token: '' 
+		})
 	}
 	return (
 		<Header className="layout-header">
@@ -52,7 +63,7 @@ const Index: FC = () => {
 								<Dropdown.Menu>
 									<Dropdown.Item>个人中心</Dropdown.Item>
 									<Dropdown.Item>个人设置</Dropdown.Item>
-									<Dropdown.Item>退出登录</Dropdown.Item>
+									<Dropdown.Item onClick={logout}>退出登录</Dropdown.Item>
 								</Dropdown.Menu>
 							}
 						>
