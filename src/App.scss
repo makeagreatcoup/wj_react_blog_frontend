@@ -53,3 +53,11 @@ body,
 	width: 0; /* 下划线宽度变为100%（整个文本宽度） */
 	left: 50%; /* 下划线起始位置在文本最左边 */
 }
+
+// 修改table的small的样式
+.semi-table-small .semi-table-tbody > .semi-table-row > .semi-table-row-cell {
+  padding-top: 2px;
+  padding-bottom: 2px;
+	// padding-top: 8px;
+  // padding-bottom: 8px;
+}

@@ -189,6 +189,7 @@ const Index: React.FC = () => {
 					total: data.length,
 					onPageChange: handlePageChange
 				}}
+				size='small'
 				loading={loading}
 			/>
 

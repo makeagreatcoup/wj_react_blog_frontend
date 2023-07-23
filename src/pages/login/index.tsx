@@ -57,9 +57,7 @@ export default function Login() {
 	}
   async function onSubmit(values) {
     setLoading(true);
-    const res = await login(values).then(res=>{
-      console.log('登录成功')
-      console.log(res)
+    await login(values).then(res=>{
       setLoading(false);
       const {token} = res.data;
       setLocalStorage(authKey,token)
