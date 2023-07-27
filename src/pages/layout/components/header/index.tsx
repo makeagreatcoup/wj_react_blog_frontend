@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { FC } from 'react'
 import { Layout, Nav, Button, Avatar, Badge, Dropdown, RadioGroup, Radio } from '@douyinfe/semi-ui'
 import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons'
@@ -7,6 +8,7 @@ import Tags from '../tags'
 import '../../index.scss'
 import userStateStore from '@/store/user'
 import { useNavigate } from 'react-router-dom'
+import { logout } from '@/config/api/user'
 
 const { Header } = Layout
 
@@ -24,12 +26,32 @@ const Index: FC = () => {
 	const question = () => {
 		window.open('https://github.com/xieyezi/semi-design-pro/issues')
 	}
-	const logout = () =>{
-		navigate('/login', { replace: true })
-		updateLoginState({
-			logged: false,
-			token: '' 
-		})
+	const logoutClick = async(type) =>{
+		console.log(type)
+		if(type){
+			console.log('退出本地')
+			updateLoginState({
+				logged: false,
+				token: '' 
+			})
+			navigate('/login', { replace: true })
+
+		}else{
+			console.log('退出登录')
+			await logout().then(res=>{
+				updateLoginState({
+					logged: false,
+					token: '' 
+				})
+				navigate('/login', { replace: true })
+			}).catch(err=>{
+				console.log(err)
+			});
+		}
+
+
+
+
 	}
 	return (
 		<Header className="layout-header">
@@ -63,7 +85,8 @@ const Index: FC = () => {
 								<Dropdown.Menu>
 									<Dropdown.Item>个人中心</Dropdown.Item>
 									<Dropdown.Item>个人设置</Dropdown.Item>
-									<Dropdown.Item onClick={logout}>退出登录</Dropdown.Item>
+									<Dropdown.Item onClick={()=>logoutClick(0)}>退出登录</Dropdown.Item>
+									{/* <Dropdown.Item onClick={()=>logoutClick(1)}>退出本地</Dropdown.Item> */}
 								</Dropdown.Menu>
 							}
 						>

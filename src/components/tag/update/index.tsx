@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi, Tag } from '@douyinfe/semi-ui'
 import { colorList } from '@/utils/utils'
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag'
+import { update } from '@/config/api/tag'
 
 const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 	const formApi=useFormApi()
@@ -37,23 +38,22 @@ const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 			</Form.Select>
 			
 			<Form.Switch 
-			field='type' 
+			field='state' 
 			label='状态'
 			labelPosition='left'
-			initValue={formApi.getValue('type')==='ON'} 
-			onChange={(v, e) => {formApi.setValue('type',v?'ON':'OFF')}}></Form.Switch>
+			initValue={formApi.getValue('state')==='ON'} 
+			onChange={(v, e) => {formApi.setValue('state',v?'ON':'OFF')}}></Form.Switch>
 
 		</>
 	)
 }
 
 
-const ModalUpdateTag : React.FC<Record<any,any>> = ({visible,setVisible,initValues}) => {
+const ModalUpdateTag : React.FC<Record<any,any>> = ({visible,setVisible,initValues,refreshData}) => {
 
 	const [formApi,setFormApi]=useState(null);
 	const colorSelectList=[];
 	const errmsg='该项为必填项'
-	console.log(initValues)
 	colorList.forEach(e=>{
 		colorSelectList.push({
 			value:e,label:
@@ -63,9 +63,16 @@ const ModalUpdateTag : React.FC<Record<any,any>> = ({visible,setVisible,initValu
 		})
 	})
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async(values) => {
+		values.state=values.state?'ON':'OFF'
 		console.log(values)
-		setVisible(false)
+		await update(values).then(rsp=>{
+			console.log(rsp)
+			refreshData()
+			setVisible(false)
+		}).catch(e=>{
+			console.log(e)
+		})
 	}
   const formValidate=(values)=>{
     const errors={}as any

@@ -22,7 +22,6 @@ function handleCommonError(err: any, config: any) {
 	}
 }
 function handleNoCommontError(err: any) {
-	console.log(err)
 	if (!err) {
 		Toast.error(errorMsg)
 	} else if (err.errorItems && err.errorItems.length > 0 && err.errorItems[0].message) {

@@ -6,27 +6,31 @@ import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import ModalAddtag from '@/components/tag/add'
 import ModalUpdatetag from '@/components/tag/update'
 import { getColor } from '@/utils/utils'
+import { list, remove } from '@/config/api/tag'
 
 const Index: React.FC = () => {
 	const [data, setData] = useState([])
 	const [loading, setLoading] = useState(false)
 	const [currentPage, setPage] = useState(1)
+	const [pageSize, setPageSize] = useState(5)
+	const [total, setTotal] = useState(0)
 	const [updateData,setUpdateData]=useState({})
 	// 是否开启软删除
 	const [trash, setTrash] = useState('none')
 
 	const [visibleAdd, setVisibleAdd] = useState(false)
 	const [visibleUpdate, setVisibleUpdate] = useState(false)
-	const pageSize = 10
 
-	const onDeleteConfirm = () => {
-		Toast.success('删除成功')
-	}
-	const onUpdate=(record)=>{
-		setVisibleUpdate(true)
-		setUpdateData(record)
-	}
+
+
 	const columns = [
+		{
+			title:'序号',
+			dataIndex:'key',
+			render:(text, record, index) => {
+				return index+1+(currentPage-1)*pageSize
+			}
+		},
 		{
 			title: '标签名称',
 			dataIndex: 'title',
@@ -83,7 +87,7 @@ const Index: React.FC = () => {
 						<Button style={{ marginLeft: 10 }} onClick={()=>onUpdate(record)}>
 							<IconEdit />
 						</Button>
-						<Popconfirm title="确定要删除？" content={content} onConfirm={onDeleteConfirm}>
+						<Popconfirm title="确定要删除？" content={content} onConfirm={()=>onDeleteConfirm(record.id)}>
 							<Button style={{ marginLeft: 10 }}>
 								<IconDelete />
 							</Button>
@@ -94,71 +98,40 @@ const Index: React.FC = () => {
 		}
 	] as ColumnProps[]
 
-	const data1 = [
-		{
-			key: 1,
-			title: '标签1',
-			summary: '啊擦撒内存空间拉萨',
-			color: 'blue',
-			state:'ON'
-		},
-		{
-			key: 2,
-			title: '标签2',
-			summary: '啊擦撒内存空间拉萨',
-			color: 'cyan',
-			state:'ON'
-		},
-		{
-			key: 3,
-			title: '标签3',
-			summary: '啊擦撒内存空间拉萨',
-			color: 'grey',
-			state:'ON'
-		},
-		{
-			key: 4,
-			title: '标签4',
-			summary: '啊擦撒内存空间拉萨',
-			color: 'indigo',
-			state:'ON'
-		},
-		{
-			key: 5,
-			title: '标签5',
-			summary: '啊擦撒内存空间拉萨',
-			color: 'light-blue',
-			state:'OFF'
-		}
-	]
-
-	const selectList = [
-		{ value: '', label: '', otherKey: 0 },
-		{ value: 'abc', label: '抖音', otherKey: 1 },
-		{ value: 'ulikecam', label: '轻颜相机', otherKey: 2 },
-		{ value: 'jianying', label: '剪映', otherKey: 3 },
-		{ value: 'toutiao', label: '今日头条', otherKey: 4 }
-	]
-
-	const handlePageChange = (page) => {
-		fetchData(page)
-	}
-	const fetchData = async (currentPage = 1) => {
-		setLoading(true)
-		setPage(currentPage)
-		const dataSource = await new Promise((res, rej) => {
-			setTimeout(() => {
-				res(data1)
-			}, 300)
+	const onDeleteConfirm = async(id) => {
+		await remove({id})
+		.then((rsp)=>{
+			Toast.success('删除成功')
+			fetchData()
 		})
+		.catch((err)=>{console.log(err)})
+	}
+	const onUpdate=(record)=>{
+		setVisibleUpdate(true)
+		setUpdateData(record)
+	}
+
+	const handlePageChange = (_currentPage: number, _pageSize: number) => {
+		setPageSize(_pageSize)
+		setPage(_currentPage)
+		fetchData()
+	}
+	const fetchData = async () => {
+		setLoading(true)
+		await list({page:currentPage,limit:pageSize})
+		.then((rsp)=>{
+			const {items,meta}=rsp.data;
+			setData(items as [])
+			setTotal(meta.totalItems||0)
+		})
+		.catch((err)=>{console.log(err)})
 		setLoading(false)
-		setData(dataSource as [])
 		dealData()
 		setTrash('')
 	}
 	useEffect(() => {
 		fetchData()
-	}, [])
+	}, [currentPage,pageSize])
 	const createData = () => {
 		setVisibleAdd(true)
 	}
@@ -185,16 +158,18 @@ const Index: React.FC = () => {
 				dataSource={data}
 				pagination={{
 					currentPage,
-					pageSize: pageSize,
-					total: data.length,
-					onPageChange: handlePageChange
+					pageSize,
+					total,
+					onChange: handlePageChange,
+					showSizeChanger:true,
+					pageSizeOpts:[5, 10, 20, 50]
 				}}
 				size='small'
 				loading={loading}
 			/>
 
-			<ModalAddtag visible={visibleAdd} setVisible={setVisibleAdd} selectList={selectList}></ModalAddtag>
-			<ModalUpdatetag visible={visibleUpdate} setVisible={setVisibleUpdate} initValues={updateData}></ModalUpdatetag>
+			<ModalAddtag visible={visibleAdd} setVisible={setVisibleAdd} refreshData={fetchData}></ModalAddtag>
+			<ModalUpdatetag visible={visibleUpdate} setVisible={setVisibleUpdate} initValues={updateData} refreshData={fetchData}></ModalUpdatetag>
 		</>
 	)
 }

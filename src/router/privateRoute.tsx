@@ -19,5 +19,5 @@ const PrivateRoute: FC<RouteProps> = (props) => {
 		<Empty title="没有权限" description="您还没有登录，请先去登录" type="403" />
 	)
 }
-
+  
 export default PrivateRoute

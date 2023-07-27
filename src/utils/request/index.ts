@@ -34,7 +34,7 @@ axios.interceptors.response.use(
 		if (response) {
 			const { status, data, config } = response
 			const { message } = data
-			if (status === 400 || status === 401) {
+			if (status === 400 || status === 401 || status === 403) {
 				handleCommonError(data, config)
 				return Promise.reject(message)
 			}
@@ -54,17 +54,16 @@ axios.interceptors.response.use(
 )
 
 // request
-export default async function request(options: requestOptions,mock?:boolean) {
+export default async function request(options: requestOptions,guest?:boolean,mock?:boolean) {
 	const { url } = options
 	delete options.url
 	const Authorization = getLocalStorage(authKey)
-	console.log(Authorization)
 	let headers = {}
 	if (options) {
 		headers = options.headers || {}
 	}
-	if (Authorization) {
-		headers[authKey] = `JWT ${Authorization}`
+	if (!guest&&Authorization) {
+		headers[authKey] = `Bearer ${Authorization}`
 	}
 	const defaultOptions = {
 		headers: {

@@ -5,7 +5,7 @@ export async function login(data) {
     url: '/user/auth/login',
     method: 'POST',
     data,
-  });
+  },true);
 }
 
 export async function logout() {

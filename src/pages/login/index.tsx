@@ -93,6 +93,7 @@ export default function Login() {
             <input name="csrfToken" type="hidden" />
             <Form.Input
               field="credential"
+              autoComplete='username'
               label={<FormattedMessage id="login.username" />}
               placeholder={formatMessage({ id: 'login.username' })}
               rules={[{ required: true, message: formatMessage({ id: 'login.required' }) }]}
@@ -100,6 +101,7 @@ export default function Login() {
             />
             <Form.Input
               field="password"
+              autoComplete="current-password"
               label={<FormattedMessage id="login.password" />}
               placeholder={formatMessage({ id: 'login.password' })}
               rules={[{ required: true, message: formatMessage({ id: 'login.required' }) }]}
