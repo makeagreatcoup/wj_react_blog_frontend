@@ -7,26 +7,29 @@ import ModalAddtag from '@/components/tag/add'
 import ModalUpdatetag from '@/components/tag/update'
 import { getColor } from '@/utils/utils'
 import { list, remove } from '@/config/api/tag'
+import useStateStore from '@/store/tag'
 
 const Index: React.FC = () => {
 	const [data, setData] = useState([])
 	const [loading, setLoading] = useState(false)
 	const [currentPage, setPage] = useState(1)
-	const [pageSize, setPageSize] = useState(5)
 	const [total, setTotal] = useState(0)
 	const [updateData,setUpdateData]=useState({})
 	// 是否开启软删除
 	const [trash, setTrash] = useState('none')
 
+	//持久化pageSize
+	const {getState,updateState} = useStateStore(state=>state)
+	const pageSize=getState()
+
 	const [visibleAdd, setVisibleAdd] = useState(false)
 	const [visibleUpdate, setVisibleUpdate] = useState(false)
-
-
 
 	const columns = [
 		{
 			title:'序号',
-			dataIndex:'key',
+			dataIndex:'number',
+			key:'number',
 			render:(text, record, index) => {
 				return index+1+(currentPage-1)*pageSize
 			}
@@ -51,10 +54,6 @@ const Index: React.FC = () => {
 			render:(record)=>{
 				return(
 					<>
-						{/* {['amber', 'blue', 'cyan', 'green', 'grey', 'indigo',  
-                'light-blue', 'light-green', 'lime', 'orange', 'pink',  
-                'purple', 'red', 'teal', 'violet', 'yellow', 'white'
-            ].map(item => (<Tag color={item} key={item}> {item} </Tag>))} */}
 						<Tag color={getColor(record)}>{getColor(record)}</Tag>
 					</>
 				)
@@ -112,7 +111,7 @@ const Index: React.FC = () => {
 	}
 
 	const handlePageChange = (_currentPage: number, _pageSize: number) => {
-		setPageSize(_pageSize)
+		updateState({pageSize:_pageSize})
 		setPage(_currentPage)
 		fetchData()
 	}
@@ -120,6 +119,7 @@ const Index: React.FC = () => {
 		setLoading(true)
 		await list({page:currentPage,limit:pageSize})
 		.then((rsp)=>{
+			console.log(rsp)
 			const {items,meta}=rsp.data;
 			setData(items as [])
 			setTotal(meta.totalItems||0)
