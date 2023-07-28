@@ -1,36 +1,19 @@
-import _create from 'zustand';
-import { persist } from 'zustand/middleware'
+import { create } from 'zustand';
+import {  createJSONStorage, persist } from 'zustand/middleware'
 
 type Actions<T> ={
   [P in keyof T & string as `set${Capitalize<P>}`]:(value: T[P])=>void
 }
 const resetters: (() => void)[] = []
 
-const zustandStorage = localStorage; 
-
-const getStorage=(persistName)=>{
-  const storage = zustandStorage;
-  const data = storage.getItem(persistName);
-  if (data) {
-    const { expire, value } = JSON.parse(data);
-    const now = Date.now();
-    if (expire && now >= expire) {
-      // 已过期,不返回
-      return undefined;
-    } else {
-      return value;
-    }
-  }
-  return undefined
-}
-
-const create = <State,A=object>(initialState,extraActions?,persistName?)=>{
+const _create = <State,A=object>(initialState,extraActions?,persistName?)=>{
   let store
   if(persistName){
     // 持久化
-    store=_create<State & Actions<State> & A>(
-      persist((
-        (set,get)=>({
+    store=create<State & Actions<State> & A>()(
+      persist(
+        (set,get)=>(
+          {
             ...initialState,
             ...Object.keys(initialState).reduce((total,key)=>{
               const functionName=`set${key[0].toUpperCase()}${key.slice(1)}`
@@ -38,15 +21,15 @@ const create = <State,A=object>(initialState,extraActions?,persistName?)=>{
               return total
             },{}),
             ...(extraActions?extraActions(set,get):{})
-          })
-      ),{
+          }
+          )
+      ,{
         name: persistName, 
-        getStorage: getStorage(persistName),
-
+        storage:createJSONStorage(()=>localStorage)
     })
     )
   }else{
-    store=_create<State & Actions<State> & A>(
+    store=create<State & Actions<State> & A>(
       (set,get)=>({
       ...initialState,
       ...Object.keys(initialState).reduce((total,key)=>{
@@ -64,10 +47,9 @@ const create = <State,A=object>(initialState,extraActions?,persistName?)=>{
 
   return store
 }
-
 export const resetAllStores = () => {
   for (const resetter of resetters) {
     resetter()
   }
 }
-export default create;
+export default _create;

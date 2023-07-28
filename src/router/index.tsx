@@ -175,12 +175,12 @@ const routeList: RouteObject[] = [
 
 const RenderRouter: FC = () => {
 	// 初始加载login登录数据，避免刷新时重置登录状态
-	useEffect(() => {
-		const data = localStorage.getItem(loginDataName);
-		if (data) {
-			userStateStore.setState(JSON.parse(data).value);
-		} 
-	}, []);
+	// useEffect(() => {
+	// 	const data = localStorage.getItem(loginDataName);
+	// 	if (data) {
+	// 		userStateStore.setState(JSON.parse(data).value);
+	// 	} 
+	// }, []);
 	const element = useRoutes(routeList)
 	return element
 }

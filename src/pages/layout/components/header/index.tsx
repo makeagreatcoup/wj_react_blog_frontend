@@ -14,7 +14,7 @@ const { Header } = Layout
 
 const Index: FC = () => {
 	const locale = useStore((state) => state.locale)
-	const { updateLoginState } = userStateStore(state => state);
+	const {updateState} = userStateStore(state => state);
 	const navigate = useNavigate();
 	const changeLocale = useStore((state) => state.changeLocale)
 
@@ -30,7 +30,7 @@ const Index: FC = () => {
 		console.log(type)
 		if(type){
 			console.log('退出本地')
-			updateLoginState({
+			updateState({
 				logged: false,
 				token: '' 
 			})
@@ -39,7 +39,7 @@ const Index: FC = () => {
 		}else{
 			console.log('退出登录')
 			await logout().then(res=>{
-				updateLoginState({
+				updateState({
 					logged: false,
 					token: '' 
 				})
@@ -86,7 +86,7 @@ const Index: FC = () => {
 									<Dropdown.Item>个人中心</Dropdown.Item>
 									<Dropdown.Item>个人设置</Dropdown.Item>
 									<Dropdown.Item onClick={()=>logoutClick(0)}>退出登录</Dropdown.Item>
-									{/* <Dropdown.Item onClick={()=>logoutClick(1)}>退出本地</Dropdown.Item> */}
+									{/* <Dropdown.Item onClick={()=>logoutClick(1)}>退出本地(测试)</Dropdown.Item> */}
 								</Dropdown.Menu>
 							}
 						>

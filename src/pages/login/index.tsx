@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import { useLocale } from '@/locales';
 import { login } from '@/config/api/user';
 import systemConfig from '@/config'
-import { setLocalStorage } from '@/utils/storage';
+import { getLocalStorage, setLocalStorage } from '@/utils/storage';
 import { useNavigate } from 'react-router-dom';
 import userStateStore from '@/store/user';
 
@@ -22,7 +22,7 @@ export default function Login() {
     credential: '',
     password: '',
   });
-  const { updateLoginState } = userStateStore(state => state);
+  const {updateState} = userStateStore(state => state);
   const [loading, setLoading] = useState(false);
   const {  authKey } = systemConfig
   function ComponentUsingFormApi() {
@@ -61,14 +61,14 @@ export default function Login() {
       setLoading(false);
       const {token} = res.data;
       setLocalStorage(authKey,token)
-      updateLoginState({
+      updateState({
         logged: true,
         token: token 
       })
       navigate('/')
     }).catch(err=>{
       setLoading(false);
-      console.log(err)
+      // console.log(err)
     });
       // router.replace(res.url).then(() => {});
   }

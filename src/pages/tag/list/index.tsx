@@ -19,8 +19,7 @@ const Index: React.FC = () => {
 	const [trash, setTrash] = useState('none')
 
 	//持久化pageSize
-	const {getState,updateState} = useStateStore(state=>state)
-	const pageSize=getState()
+	const {pageSize,updateState} = useStateStore(state=>state)
 
 	const [visibleAdd, setVisibleAdd] = useState(false)
 	const [visibleUpdate, setVisibleUpdate] = useState(false)
