@@ -1,21 +1,19 @@
 /* eslint-disable no-console */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Table, Popconfirm, Toast, ButtonGroup, Avatar } from '@douyinfe/semi-ui'
+import { Button, Table, Popconfirm, Toast, ButtonGroup } from '@douyinfe/semi-ui'
 import { IconReply, IconDelete } from '@douyinfe/semi-icons'
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import ModalAddComment from '@/components/comment/add'
 import ModalUpdateComment from '@/components/comment/update'
 import CommentSearchForm from '@/components/comment/search'
-import { getFirstWord, getRandomColor } from '@/utils/utils'
-import Label from '@douyinfe/semi-ui/lib/es/form/label'
 import useStateStore from '../store'
-import { remove, tree, treePaginate } from '@/config/api/comment'
+import { remove, treePaginate } from '@/config/api/comment'
 import { titleList } from '@/config/api/post'
 import { searchList } from '@/config/api/customer'
-import debounce from 'lodash/debounce'
 import { useDebounceFetch } from '@/hooks/useDebounce'
 import { useDropdownTree } from '@/hooks/useDropdownTree'
 import { useDropdown } from '@/hooks/useDropdown'
+import { format } from 'date-fns'
 
 const Index: React.FC = () => {
 	const [data, setData] = useState([])
@@ -74,7 +72,14 @@ const Index: React.FC = () => {
 					title: '评论时间',
 					dataIndex: 'createdAt',
 					align: 'center',
-					key: 'createdAt'
+					key: 'createdAt',
+					render:(record)=>{
+						return (
+							<>
+								{format(new Date(record), 'yyyy-MM-dd HH:MM')}
+							</>
+						)
+					}
 				},
 				{
 					title: '层级',

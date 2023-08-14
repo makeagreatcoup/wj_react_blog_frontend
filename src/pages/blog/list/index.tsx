@@ -130,7 +130,6 @@ const Index: React.FC = () => {
       width:150,
 			key: 'createdAt',
 			render:(record)=>{
-				console.log(record)
 				return (
 					<>
 						{format(new Date(record), 'yyyy-MM-dd HH:MM')}
