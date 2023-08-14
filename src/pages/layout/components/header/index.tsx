@@ -14,7 +14,7 @@ const { Header } = Layout
 
 const Index: FC = () => {
 	const locale = useStore((state) => state.locale)
-	const {updateState} = userStateStore(state => state);
+	const {resetState} = userStateStore(state => state);
 	const navigate = useNavigate();
 	const changeLocale = useStore((state) => state.changeLocale)
 
@@ -30,19 +30,13 @@ const Index: FC = () => {
 		console.log(type)
 		if(type){
 			console.log('退出本地')
-			updateState({
-				logged: false,
-				token: '' 
-			})
+			resetState()
 			navigate('/login', { replace: true })
 
 		}else{
 			console.log('退出登录')
 			await logout().then(res=>{
-				updateState({
-					logged: false,
-					token: '' 
-				})
+				resetState()
 				navigate('/login', { replace: true })
 			}).catch(err=>{
 				console.log(err)

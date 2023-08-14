@@ -108,7 +108,6 @@ const ModalUpdateTag : React.FC<Record<any,any>> = ({visible,setVisible,initValu
 				<Form 
 					onSubmit={handleSubmit} 
 					validateFields={formValidate} 
-					style={{ width: 400 }}
 					initValues={initValues}
 				>
 					<FormApiComponent setFormApi={setFormApi} selectList={colorSelectList} errmsg={errmsg}></FormApiComponent>

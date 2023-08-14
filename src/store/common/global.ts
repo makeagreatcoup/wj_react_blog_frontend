@@ -1,5 +1,5 @@
 import { getLocalStorage } from '@/utils/storage'
-import create from 'zustand'
+import {create} from 'zustand'
 import useGlobalStore from '../useGlobalStore'
 export interface GlobalState {
 	locale: 'zh_CN' | 'en_GB'

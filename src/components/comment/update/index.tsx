@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi } from '@douyinfe/semi-ui'
+import { save, update } from '@/config/api/comment';
 
 const FormApiComponent=({setFormApi,selectList,errmsg,errmsg2})=>{
 	const formApi=useFormApi()
@@ -28,7 +29,7 @@ const FormApiComponent=({setFormApi,selectList,errmsg,errmsg2})=>{
 			/>
 			<Form.TextArea
 					style={{ width: 300,height: 120 }}
-					field='parent.body'
+					field='reply'
 					label='回复评论'
 					placeholder='请输入评论'
 					rules={[{ required: true, message: errmsg }]}
@@ -38,14 +39,27 @@ const FormApiComponent=({setFormApi,selectList,errmsg,errmsg2})=>{
 }
 
 
-const ModalUpdateComment : React.FC<Record<any,any>> = ({visible,setVisible,selectList,initValues}) => {
+const ModalUpdateComment : React.FC<Record<any,any>> = ({visible,setVisible,selectList,initValues,refreshData}) => {
 	const [formApi,setFormApi]=useState(null);
 	// 待优化
 	const errmsg='该项为必填项'
 	const errmsg2='该项为必选项'
 
-  const handleSubmit = (values) => {
-    // todo
+  const handleSubmit = async(values) => {
+		
+		values.post=values.post?.id ?? ''
+		values.body = values.reply
+		values.customer = values.customer?.id ?? ''
+		values.parent = values.id
+		values.id=undefined
+    console.log(values)
+		await save(values).then(rsp=>{
+			console.log(rsp)
+			refreshData()
+			setVisible(false)
+		}).catch(e=>{
+			console.log(e)
+		})
 		setVisible(false)
 	}
   const formValidate=(values)=>{
@@ -56,8 +70,8 @@ const ModalUpdateComment : React.FC<Record<any,any>> = ({visible,setVisible,sele
 		if(values.body==null){
       errors.body=errmsg
     }
-		if(values.parent.body==null){
-      errors.parent.body=errmsg
+		if(values.reply==null){
+      errors.reply=errmsg
     }
 		if(Object.keys(errors).length === 0){
 			return null
@@ -83,7 +97,6 @@ const ModalUpdateComment : React.FC<Record<any,any>> = ({visible,setVisible,sele
 				<Form 
 					onSubmit={handleSubmit} 
 					validateFields={formValidate} 
-					style={{ width: 400 }}
           initValues={initValues}
 				>
 					<FormApiComponent setFormApi={setFormApi} selectList={selectList} errmsg={errmsg} errmsg2={errmsg2}></FormApiComponent>

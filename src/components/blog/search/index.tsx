@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
-import { Button, Col, DatePicker, Form, Row } from '@douyinfe/semi-ui'
-import React, { useState } from 'react'
+import { Button, Col, DatePicker, Form, Row, Tag } from '@douyinfe/semi-ui'
+import { TagColor } from '@douyinfe/semi-ui/lib/es/tag'
+import React, { useEffect, useState } from 'react'
 
-const Index = () => {
+const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions }) => {
 	const onSubmit = (values) => {
 		console.log(values)
 	}
@@ -25,12 +26,18 @@ const Index = () => {
 	const [dataValueArr, setDataValueArr] = useState([])
 	const [open, setOpen] = useState(false)
 
+	const [categoriesArr, setCategoryData] = useState([])
+	const [tagsArr, setTagData] = useState([])
 	const getWidthStyle = { width: 150 }
 	const getDatePickerWidthStyle = { width: 400 }
-	const allParam = []
+	const allParam = [{ key: '0', value: undefined, label: '全部' }]
 
-	const categoriesArr = []
-	const tagsArr = []
+	useEffect(() => {
+		setCategoryData({ ...allParam, ...categoryOptions })
+	}, [categoryOptions])
+	useEffect(() => {
+		setTagData(tagOptions)
+	}, [tagOptions])
 	const statusOptions = [
 		{ key: '1', value: 'ON', label: 'ON' },
 		{ key: '2', value: 'OFF', label: 'OFF' }
@@ -48,25 +55,31 @@ const Index = () => {
 							<Col span={20}>
 								<Row gutter={[8, 16]}>
 									<Col span={6}>
-										<Form.Input style={getWidthStyle} field="title" label="标题" placeholder="请输入文章标题" />
+										<Form.TreeSelect
+											style={{...getWidthStyle,
+												whiteSpace:"nowrap"}}
+											field="category"
+											label="分类"
+											placeholder="请选择分类"
+											treeData={categoryOptions}
+											dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+										></Form.TreeSelect>
 									</Col>
 									<Col span={6}>
-										<Form.Select style={getWidthStyle} field="category" label="分类" placeholder="请选择分类">
-											{[...allParam, ...categoriesArr].map((item) => (
-												<Form.Select.Option key={item.key} value={item.value}>
-													{item.label}
-												</Form.Select.Option>
-											))}
-										</Form.Select>
-									</Col>
-									<Col span={6}>
-										<Form.Select style={getWidthStyle} field="tags" label="标签" placeholder="请选择标签">
-											{tagsArr.map((item) => (
-												<Form.Select.Option key={item.key} value={item.value}>
-													{item.label}
-												</Form.Select.Option>
-											))}
-										</Form.Select>
+									<Form.Select
+													multiple
+													maxTagCount={1}
+													style={{ width: '100%' }}
+													field="tags"
+													label="标签"
+													placeholder="请选择标签"
+												>
+													{tagsArr.map((item) => (
+														<Form.Select.Option key={item.key} value={item.value}>
+															<Tag color={item.color as TagColor}>{item.label}</Tag>
+														</Form.Select.Option>
+													))}
+												</Form.Select>
 									</Col>
 									<Col span={6}>
 										<Form.Select style={getWidthStyle} field="status" label="状态" placeholder="请选择文章状态">
@@ -77,8 +90,6 @@ const Index = () => {
 											))}
 										</Form.Select>
 									</Col>
-								</Row>
-								<Row gutter={[8, 16]}>
 									<Col span={6}>
 										<Form.Select
 											style={getWidthStyle}
@@ -93,7 +104,8 @@ const Index = () => {
 											))}
 										</Form.Select>
 									</Col>
-
+								</Row>
+								<Row gutter={[8, 16]}>
 									<Col span={12}>
 										<DatePicker
 											insetLabel="创建日期"

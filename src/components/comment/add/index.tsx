@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi } from '@douyinfe/semi-ui'
+import { save } from '@/config/api/comment';
+import userStateStore from '@/store/user';
 
 const FormApiComponent=({setFormApi,selectList,errmsg,errmsg2})=>{
 	const formApi=useFormApi()
@@ -30,17 +32,24 @@ const FormApiComponent=({setFormApi,selectList,errmsg,errmsg2})=>{
 }
 
 
-const ModalAddComment : React.FC<Record<any,any>> = ({visible,setVisible,selectList}) => {
+const ModalAddComment : React.FC<Record<any,any>> = ({visible,setVisible,selectList ,refreshData}) => {
 
 	const [formApi,setFormApi]=useState(null);
 	// 待优化todo
 	const errmsg='该项为必填项'
 	const errmsg2='该项为必选项'
 
-
-  const handleSubmit = (values) => {
+	const user=userStateStore(state=>state.user)
+  const handleSubmit = async(values) => {
+		values.customer=user?.customer?.id ?? ''
 		console.log(values)
-		setVisible(false)
+		await save(values).then(rsp=>{
+			console.log(rsp)
+			refreshData()
+			setVisible(false)
+		}).catch(e=>{
+			console.log(e)
+		})
 	}
   const formValidate=(values)=>{
     const errors={}as any
@@ -76,7 +85,6 @@ const ModalAddComment : React.FC<Record<any,any>> = ({visible,setVisible,selectL
 				<Form 
 					onSubmit={handleSubmit} 
 					validateFields={formValidate} 
-					style={{ width: 400 }}
 				>
 					<FormApiComponent setFormApi={setFormApi} selectList={selectList} errmsg={errmsg} errmsg2={errmsg2}></FormApiComponent>
 				</Form>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi, Tag } from '@douyinfe/semi-ui'
 import { colorList, getColor } from '@/utils/utils'
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag'
-import { store } from '@/config/api/tag'
+import { save } from '@/config/api/tag'
 
 const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 	const formApi=useFormApi()
@@ -64,7 +64,7 @@ const ModalAddTag : React.FC<Record<any,any>> = ({visible,setVisible,refreshData
 
   const handleSubmit = async(values) => {
 		console.log(values)
-		await store(values).then(rsp=>{
+		await save(values).then(rsp=>{
 			console.log(rsp)
 			refreshData()
 			setVisible(false)
@@ -106,7 +106,6 @@ const ModalAddTag : React.FC<Record<any,any>> = ({visible,setVisible,refreshData
 				<Form 
 					onSubmit={handleSubmit} 
 					validateFields={formValidate} 
-					style={{ width: 400 }}
 				>
 					<FormApiComponent setFormApi={setFormApi} selectList={colorSelectList} errmsg={errmsg}></FormApiComponent>
 				</Form>

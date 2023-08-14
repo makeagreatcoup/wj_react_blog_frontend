@@ -61,3 +61,43 @@ body,
 	// padding-top: 8px;
   // padding-bottom: 8px;
 }
+
+// .first-col {
+// 	white-space: nowrap;
+// 	overflow: hidden;
+// 	max-width: 300px;
+// }
+// .first-col::after{
+// 	content:'...';
+// 	float: right;
+// }
+
+.first-col {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 文本内容 */  
+.first-col label {
+  display: inline-block;
+  vertical-align: middle;
+  
+  /* 兼容实现单行省略 */
+  width: 185px; 
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 伪元素清除浮动 */
+.first-col::before,
+.first-col::after {
+   content: '';
+   display: table;
+}
+
+.first-col::after {
+   clear: both;
+}

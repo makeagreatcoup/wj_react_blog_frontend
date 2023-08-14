@@ -9,120 +9,76 @@ import ForEditor from '@/components/common/ForEditor'
 import { errorMsg } from '@/utils/utils'
 import { ValidateStatus } from '@douyinfe/semi-ui/lib/es/input'
 import { useLocation } from 'react-router-dom'
-import { Interface } from 'readline'
+import { detail, save } from '@/config/api/post'
+import useCategoryStore from '@/pages/category/store/useStore'
+import { useDropdownTree } from '@/hooks/useDropdownTree'
+import useTagStore from '@/pages/tag/store/useStore'
+import { useDropdown } from '@/hooks/useDropdown'
 
 type BlogProps = {
+	id: string
 	title: string
 	summary: string
 	body: string
 	cover: string
 	state: string
 	type: string
-	category: string
+	category: {id:string}
 	tags: any
 	keywords: any
 	publishedAt: Date
 }
 
 const Index = () => {
-	const location = useLocation()
-	const { state } = location
+	const { state } = useLocation()
 	const [formValue, setFormValue] = useState(null)
-
 	useEffect(() => {
+		fetchCategoryData()
+		fetchTagData()
 		if (state) {
-			console.log(state)
 			const values = state as BlogProps
 			setFormValue({
+				id: values.id,
 				title: values.title,
 				summary: values.summary,
 				body: values.body,
 				cover: values.cover,
 				type: values.type,
 				state: values.state === 'ON' ? true : false,
-				category: values.category,
-				tags: values.tags.map((item) => item.key),
+				category: values.category?values.category.id:'',
+				tags: values.tags ? values.tags.map((item) => item.id) : [],
 				keywords: values.keywords,
 				publishStatus: values.publishedAt ? true : false
 			})
 		}
 	}, [])
 
-	const categoriesArr = [
-		{
-			key: '1',
-			label: '分类1',
-			children: [
-				{
-					key: '11',
-					label: '分类1-1',
-					depth: 1,
-					parent: '1',
-					customOrder: 0,
-					deleteAt: null
-				},
-				{
-					key: '12',
-					label: '分类1-2',
-					depth: 1,
-					customOrder: 0,
-					deleteAt: null
-				}
-			]
-		},
-		{
-			key: '2',
-			label: '分类2',
-			depth: 0,
-			customOrder: 0,
-			deleteAt: null,
-			children: [
-				{
-					key: '21',
-					label: '分类2-1',
-					depth: 0,
-					parent: '2',
-					customOrder: 0,
-					deleteAt: null
-				},
-				{
-					key: '22',
-					label: '分类2-2',
-					depth: 0,
-					parent: '2',
-					customOrder: 0,
-					deleteAt: null
-				}
-			]
-		}
-	]
-	const tagsArr = [
-		{ key: '1', value: '1', label: '标签1', color: 'amber' },
-		{ key: '2', value: '2', label: '标签2', color: 'blue' },
-		{ key: '3', value: '3', label: '标签3', color: 'cyan' },
-		{ key: '4', value: '4', label: '标签4', color: 'green' }
-	]
+	const { categoryData, fetchCategoryData } = useCategoryStore((state) => state)
+	const categoryOptions = useDropdownTree(categoryData, 'name')
+
+	const { tagData, fetchTagData } = useTagStore((state) => state)
+	const tagOptions = useDropdown(tagData, 'title')
+
 
 	return (
 		<>
-			{formValue ? <BlogForm categoriesArr={categoriesArr} tagsArr={tagsArr} initValues={formValue}></BlogForm> : null}
+			{formValue ? (
+				<BlogForm categoryOptions={categoryOptions} tagOptions={tagOptions} initValues={formValue}></BlogForm>
+			) : null}
 		</>
 	)
 }
 
 export default Index
 
-const BlogForm: React.FC<Record<any, any>> = ({ categoriesArr, tagsArr, initValues }) => {
+const BlogForm: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions, initValues }) => {
 	const [open, setOpen] = useState(false)
 
 	const [saveLoading, setSaveLoading] = useState(false)
 	const [fileUrl, setFileUrl] = useState('')
 	const [html, setHtml] = useState('')
-	const [selectTags,setSelectTags]=useState(null)
 	const [fileActiveKey, setFileActiveKey] = useState('1')
-
 	const [validateStatus, setValidateStatus] = useState('default' as ValidateStatus)
-	console.log(initValues)
 	useEffect(() => {
 		if (initValues && initValues.cover) {
 			setFileActiveKey('2')
@@ -131,16 +87,29 @@ const BlogForm: React.FC<Record<any, any>> = ({ categoriesArr, tagsArr, initValu
 		}
 		if (initValues && initValues.body) {
 			setHtml(initValues.body)
+		} else {
+			fetchHtml(initValues.id)
 		}
 	}, [])
-
-	const onSubmit = (values) => {
+	const fetchHtml = async (id) => {
+		await detail({ id })
+			.then((rsp) => {
+				console.log(rsp)
+				const data = rsp.data
+				setHtml(data?.body)
+			})
+			.catch((e) => {
+				console.log(e)
+				setSaveLoading(false)
+			})
+	}
+	const onSubmit = async (values) => {
 		console.log(values)
 		values.cover = fileUrl
 		values.body = html
 		values.type = 'html'
 		values.publishedAt = values.publishStatus ? new Date() : null
-
+		values.state = values.state ? 'ON':'OFF'
 		if (!values.title) {
 			Toast.error(errorMsg[0])
 			return
@@ -150,10 +119,18 @@ const BlogForm: React.FC<Record<any, any>> = ({ categoriesArr, tagsArr, initValu
 			return
 		}
 		setSaveLoading(true)
-		setTimeout(() => {
-			console.log(values)
-			setSaveLoading(false)
-		}, 3000)
+		await save(values)
+			.then((rsp) => {
+				console.log(rsp)
+				setTimeout(() => {
+					Toast.success('保存成功')
+					setSaveLoading(false)
+				}, 200)
+			})
+			.catch((e) => {
+				console.log(e)
+				setSaveLoading(false)
+			})
 	}
 	const validate = (val, values) => {
 		if (!val) {
@@ -196,7 +173,7 @@ const BlogForm: React.FC<Record<any, any>> = ({ categoriesArr, tagsArr, initValu
 											field="category"
 											label="分类"
 											dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-											treeData={categoriesArr}
+											treeData={categoryOptions}
 											placeholder="请选择分类"
 										/>
 									</Col>
@@ -215,8 +192,7 @@ const BlogForm: React.FC<Record<any, any>> = ({ categoriesArr, tagsArr, initValu
 													<Tag color={item.color as TagColor}>{item.label}</Tag>
 												</Form.Select.Option>
 											))} */}
-											{tagsArr.map((item) => (
-												
+											{tagOptions.map((item) => (
 												<Form.Select.Option key={item.key} value={item.value}>
 													<Tag color={item.color as TagColor}>{item.label}</Tag>
 												</Form.Select.Option>

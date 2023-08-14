@@ -59,11 +59,12 @@ export default function Login() {
     setLoading(true);
     await login(values).then(res=>{
       setLoading(false);
-      const {token} = res.data;
+      const {token,user} = res.data;
       setLocalStorage(authKey,token)
       updateState({
         logged: true,
-        token: token 
+        token,
+        user
       })
       navigate('/')
     }).catch(err=>{

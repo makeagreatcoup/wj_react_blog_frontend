@@ -9,10 +9,15 @@ import ForEditor from '@/components/common/ForEditor'
 import { errorMsg } from '@/utils/utils'
 import { ValidateStatus } from '@douyinfe/semi-ui/lib/es/input'
 import { useLocation } from 'react-router-dom'
+import { save } from '@/config/api/post'
+import useCategoryStore from '@/pages/category/store/useStore'
+import { useDropdownTree } from '@/hooks/useDropdownTree'
+import useTagStore from '@/pages/tag/store/useStore'
+import { useDropdown } from '@/hooks/useDropdown'
 
 const Index = () => {
   const location=useLocation();
-  const {state}=location;
+  const { state }=location;
   const [formValue,initFormValue] = useState({})
   const [open, setOpen] = useState(false)
 
@@ -20,36 +25,58 @@ const Index = () => {
   const [fileUrl,setFileUrl] =useState('')
   const [html,setHtml]=useState('')
   const [fileActiveKey,setFileActiveKey]=useState('1')
-
+	const [formApi,setFormApi] = useState(null)
   const [validateStatus, setValidateStatus] = useState("default" as ValidateStatus);
-  console.log(location)
+
   useEffect(()=>{
-    console.log(state)
+		fetchCategoryData()
+		fetchTagData()
     if(state){
       console.log(state)
       initFormValue(state)
     }
   },[])
-	const onSubmit = (values) => {
-		console.log(values)
+
+	const {categoryData,fetchCategoryData} = useCategoryStore(state=>state)
+	const categoryOptions = useDropdownTree(categoryData,'name')
+
+	const {tagData,fetchTagData} = useTagStore(state=>state)
+	const tagOptions = useDropdown(tagData,'title')
+
+	const submit = async (formApi)=>{
+		setFormApi(formApi)
+	}
+	const onSubmit = async (values) => {
+		setSaveLoading(true)
     values.cover=fileUrl;
     values.body=html;
     values.type="html";
     values.publishedAt=values.publishStatus?new Date():null
+		values.state=values.state?'ON':'OFF'
+		console.log(values)
 
     if(!values.title){
       Toast.error(errorMsg[0])
+			setSaveLoading(false)
       return;
     }
     if(!values.body){
       Toast.error(errorMsg[1])
+			setSaveLoading(false)
       return;
     }
-    setSaveLoading(true)
-    setTimeout(()=>{
-      console.log(values)
-      setSaveLoading(false)
-    },3000)
+		await save(values).then(rsp=>{
+			console.log(rsp)
+			setTimeout(()=>{
+				Toast.success('保存成功')
+				setSaveLoading(false)
+				formApi.reset()
+				setHtml('')
+			},200)
+		}).catch(e=>{
+			console.log(e)
+			setSaveLoading(false)
+		})
 	}
   const validate=(val,values)=>{
     if(!val){
@@ -64,63 +91,6 @@ const Index = () => {
 	const onChangeSwitch = () => {
 		return setOpen(!open)
 	}
-
-
-
-	const categoriesArr = [
-		{
-			key: '1',
-			label: '分类1',
-			children: [
-				{
-					key: '11',
-					label: '分类1-1',
-					depth: 1,
-					parent: '1',
-					customOrder: 0,
-					deleteAt: null
-				},
-				{
-					key: '12',
-					label: '分类1-2',
-					depth: 1,
-					customOrder: 0,
-					deleteAt: null
-				}
-			]
-		},
-		{
-			key: '2',
-			label: '分类2',
-			depth: 0,
-			customOrder: 0,
-			deleteAt: null,
-			children: [
-				{
-					key: '21',
-					label: '分类2-1',
-					depth: 0,
-					parent: '2',
-					customOrder: 0,
-					deleteAt: null
-				},
-				{
-					key: '22',
-					label: '分类2-2',
-					depth: 0,
-					parent: '2',
-					customOrder: 0,
-					deleteAt: null
-				}
-			]
-		}
-	]
-	const tagsArr = [
-		{ key: '1', value: '1', label: '标签1', color: 'amber' },
-		{ key: '2', value: '2', label: '标签2', color: 'blue' },
-		{ key: '3', value: '3', label: '标签3', color: 'cyan' },
-		{ key: '4', value: '4', label: '标签4', color: 'green' }
-	]
 
 	return (
 		<>
@@ -153,7 +123,7 @@ const Index = () => {
 													field="category"
 													label="分类"
 													dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-													treeData={categoriesArr}
+													treeData={categoryOptions}
 													placeholder="请选择分类"
 												/>
 											</Col>
@@ -166,7 +136,7 @@ const Index = () => {
 													label="标签"
 													placeholder="请选择标签"
 												>
-													{tagsArr.map((item) => (
+													{tagOptions.map((item) => (
 														<Form.Select.Option key={item.key} value={item.value}>
 															<Tag color={item.color as TagColor}>{item.label}</Tag>
 														</Form.Select.Option>
@@ -210,7 +180,7 @@ const Index = () => {
                   <ForEditor initHtml='' htmlCallback={(html)=>{setHtml(html)}}/>
                 </div>
                 <div style={{height:'10%',display:'flex',flexWrap:'wrap',alignContent:'flex-end',justifyContent:'flex-end'}}>
-                  <Button htmlType="submit" loading={saveLoading}  >保存并重置</Button>
+                  <Button htmlType="submit" loading={saveLoading} onClick={()=>submit(formApi)} >保存并重置</Button>
                 </div>
 							</Col>
 						</Row>

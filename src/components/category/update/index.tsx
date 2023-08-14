@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import { Modal, Form, useFormApi } from '@douyinfe/semi-ui'
+import { update } from '@/config/api/category';
 
 const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 	const formApi=useFormApi()
@@ -9,13 +10,14 @@ const FormApiComponent=({setFormApi,selectList,errmsg})=>{
   }, [formApi]);
 	return (
 		<>
-			<Form.Select
-				field="region"
+			<Form.TreeSelect
+				field="parent"
 				label="父分类"
 				placeholder="请选择"
 				style={{ width: 300 }}
-				optionList={selectList}
-			></Form.Select>
+				treeData={selectList}
+				dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+			></Form.TreeSelect>
 			<Form.Input
 				field="name"
 				label="分类名称"
@@ -34,12 +36,18 @@ const FormApiComponent=({setFormApi,selectList,errmsg})=>{
 }
 
 
-const ModalUpdateCategory : React.FC<Record<any,any>> = ({visible,setVisible,selectList,initValues}) => {
+const ModalUpdateCategory : React.FC<Record<any,any>> = ({visible,setVisible,selectList,initValues,refreshData}) => {
 	const [formApi,setFormApi]=useState(null);
 	const errmsg='该项为必填项'
 
-  const handleSubmit = (values) => {
-    // todo
+  const handleSubmit = async(values) => {
+		await update(values).then(rsp=>{
+			console.log(rsp)
+			refreshData()
+			setVisible(false)
+		}).catch(e=>{
+			console.log(e)
+		})
 		setVisible(false)
 	}
   const formValidate=(values)=>{
@@ -71,7 +79,6 @@ const ModalUpdateCategory : React.FC<Record<any,any>> = ({visible,setVisible,sel
 				<Form 
 					onSubmit={handleSubmit} 
 					validateFields={formValidate} 
-					style={{ width: 400 }}
           initValues={initValues}
 				>
 					<FormApiComponent setFormApi={setFormApi} selectList={selectList} errmsg={errmsg}></FormApiComponent>

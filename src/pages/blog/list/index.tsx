@@ -1,12 +1,19 @@
 /* eslint-disable no-console */
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Table, Popconfirm, Toast, Typography, Tag,Image, TagGroup } from '@douyinfe/semi-ui'
 import { IconEdit, IconDelete } from '@douyinfe/semi-icons'
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import { getColor } from '@/utils/utils'
 import PostSearch from '@/components/blog/search'
 import { useNavigate  } from 'react-router-dom';
-
+import useStateStore from '../store'
+import { list, remove } from '@/config/api/post'
+import { useDebounceFetch } from '@/hooks/useDebounce'
+import { useDropdownTree } from '@/hooks/useDropdownTree'
+import { useDropdown } from '@/hooks/useDropdown'
+import useCategoryStore from '@/pages/category/store/useStore'
+import useTagStore from '@/pages/tag/store/useStore'
+import { format } from 'date-fns';
 
 const Index: React.FC = () => {
 
@@ -16,28 +23,23 @@ const Index: React.FC = () => {
 	const [currentPage, setPage] = useState(1)
 	// 是否开启软删除
 	const [trash, setTrash] = useState('none')
+	const { pageSize, updateState } = useStateStore((state) => state)
+	const [total, setTotal] = useState(0)
 
-	const pageSize = 10
-
-	const onDeleteConfirm = () => {
-		Toast.success('删除成功')
-	}
-	const onUpdate=(record)=>{
-		console.log(record)
-		console.log(1)
-		history('/blog/update',{state:record})
-	}
-	const columns = [
+	// const [categoryOptions, setCategoryOptions] = useState([])
+	const columns = useMemo(()=>[
 		{
 			title: '标题',
 			dataIndex: 'title',
 			width: 200,
+			className: 'first-col',
 			key: 'title'
 		},
 		{
 			title: '描述',
 			dataIndex: 'summary',
 			width: 200,
+			className: 'first-col',
 			key: 'summary'
 		},
 		{
@@ -65,8 +67,13 @@ const Index: React.FC = () => {
 			title: '所属分类',
 			dataIndex: 'category',
       align:'center',
+			className: 'first-col',
       width:100,
-			key: 'category'
+			key: 'category',
+			render:(record)=>{
+				if(!record)return
+				return record.name
+			}
 		},
 		{
 			title: '标签',
@@ -75,6 +82,7 @@ const Index: React.FC = () => {
       align:'center',
       width:100,
       render:(record)=>{
+				if(!record)return
         const tagList = record.map(item => ({
           color: getColor(item.color),
           children: item.title,
@@ -119,15 +127,23 @@ const Index: React.FC = () => {
 			title: '创建时间',
 			dataIndex: 'createdAt',
       align:'center',
-      width:100,
-			key: 'createdAt'
+      width:150,
+			key: 'createdAt',
+			render:(record)=>{
+				console.log(record)
+				return (
+					<>
+						{format(new Date(record), 'yyyy-MM-dd HH:MM')}
+					</>
+				)
+			}
 		},
 
 		{
 			title: '操作',
 			dataIndex: '',
 			key: '',
-			width: 200,
+			width: 150,
       fixed: 'right',
 			align: 'center',
 			render: (text, record, index) => {
@@ -137,7 +153,7 @@ const Index: React.FC = () => {
 						<Button style={{ marginLeft: 10 }} onClick={()=>onUpdate(record)}>
 							<IconEdit />
 						</Button>
-						<Popconfirm title="确定要删除？" content={content} onConfirm={onDeleteConfirm}>
+						<Popconfirm title="确定要删除？" content={content} onConfirm={()=>onDeleteConfirm(record.id)}>
 							<Button style={{ marginLeft: 10 }}>
 								<IconDelete />
 							</Button>
@@ -146,7 +162,7 @@ const Index: React.FC = () => {
 				)
 			}
 		}
-	] as ColumnProps[]
+	] as ColumnProps[],[])
   const scroll = useMemo(() => ({ x: 1200 }), []);
   const srcList = useMemo(() => ([
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/abstract.jpg",
@@ -154,171 +170,62 @@ const Index: React.FC = () => {
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/greenleaf.jpg",
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/colorful.jpg",
 ]), []); 
-	const data1 = [
-		{
-			key: 1,
-			title: '标签1',
-			summary: '啊擦撒内存空间拉萨',
-			cover: srcList[0],
-			state:'ON',
-      category:'分类1',
-			body:'今天有个大新闻啊1<br>是啊是啊',
-      tags:[{
-        key: '1',
-        title: '标签1',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'blue',
-        state:'ON'
-      },
-      {
-        key: '2',
-        title: '标签2',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'cyan',
-        state:'ON'
-      },],
-      publishedAt:'asdasfasd'
-		},
-		{
-			key: 2,
-			title: '标签2',
-			summary: '啊擦撒内存空间拉萨',
-			cover: srcList[1],
-			state:'ON',
-			body:'今天有个大新闻啊2<br>是啊是啊',
-      category:'分类1',
-      tags:[
-      {
-        key: '3',
-        title: '标签3',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'grey',
-        state:'ON'
-      }],
-      publishedAt:'asdasfasd'
-		},
-		{
-			key: 3,
-			title: '标签3',
-			summary: '啊擦撒内存空间拉萨',
-			cover: srcList[2],
-			body:'今天有个大新闻啊3<br>是啊是啊',
-			state:'ON',
-      category:'分类1',
-      tags:[{
-        key: '3',
-        title: '标签3',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'grey',
-        state:'ON'
-      },
-      {
-        key: '4',
-        title: '标签4',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'indigo',
-        state:'ON'
-      }],
-      publishedAt:''
-		},
-		{
-			key: 4,
-			title: '标签4',
-			body:'今天有个大新闻啊4<br>是啊是啊',
-			summary: '啊擦撒内存空间拉萨',
-			cover: srcList[3],
-			state:'ON',
-      category:'分类1',
-      tags:[{
-        key: '4',
-        title: '标签4',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'indigo',
-        state:'ON',
-        publishedAt:''
-      },
-      {
-        key: '5',
-        title: '标签5',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'light-blue',
-        state:'OFF'
-      }]
-		},
-		{
-			key: 5,
-			title: '标签5',
-			summary: '啊擦撒内存空间拉萨',
-			cover: srcList[3],
-			state:'OFF',
-      category:'分类1',
 
-      tags:[{
-        key: '1',
-        title: '标签1',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'blue',
-        state:'ON'
-      },
-      {
-        key: '2',
-        title: '标签2',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'cyan',
-        state:'ON'
-      },{
-        key: '3',
-        title: '标签3',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'grey',
-        state:'ON'
-      },
-      {
-        key: '4',
-        title: '标签4',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'indigo',
-        state:'ON'
-      },
-      {
-        key: '5',
-        title: '标签5',
-        summary: '啊擦撒内存空间拉萨',
-        color: 'light-blue',
-        state:'OFF'
-      }],
-      publishedAt:''
-		},
+	// const {categoryData, categoryTotal} = useCategoryData()
+	// console.log(categoryData)
+	// console.log(categoryTotal)
 
-	]
+	useEffect(() => {
+		fetchData()
+		fetchCategoryData()
+		fetchTagData()
+	}, [])
+	
+	const {categoryData,fetchCategoryData} = useCategoryStore(state=>state)
+	const categoryOptions = useDropdownTree(categoryData,'name')
 
-	const selectList = [
-		{ value: '', label: '', otherKey: 0 },
-		{ value: 'abc', label: '抖音', otherKey: 1 },
-		{ value: 'ulikecam', label: '轻颜相机', otherKey: 2 },
-		{ value: 'jianying', label: '剪映', otherKey: 3 },
-		{ value: 'toutiao', label: '今日头条', otherKey: 4 }
-	]
+	const {tagData,fetchTagData} = useTagStore(state=>state)
+	const tagOptions = useDropdown(tagData,'title')
 
-	const handlePageChange = (page) => {
-		fetchData(page)
-	}
-	const fetchData = async (currentPage = 1) => {
-		setLoading(true)
-		setPage(currentPage)
-		const dataSource = await new Promise((res, rej) => {
-			setTimeout(() => {
-				res(data1)
-			}, 300)
+
+	const fetchFunc = async () => {
+		await list({page:currentPage,limit:pageSize})
+		.then((rsp)=>{
+			console.log(rsp)
+			const {items,meta}=rsp.data;
+			setData(items as [])
+			setTotal(meta.totalItems||0)
 		})
-		setLoading(false)
-		setData(dataSource as [])
+		.catch((err)=>{console.log(err)})
+	}
+	const debouncedFetch = useDebounceFetch(fetchFunc)
+	
+	const fetchData = async () => {
+		setLoading(true)
+		await debouncedFetch().then(() => {
+			setLoading(false)
+		})
 		dealData()
 		setTrash('')
 	}
-	useEffect(() => {
-		fetchData()
-	}, [])
+
+	const handlePageChange = (_currentPage: number, _pageSize: number) => {
+		updateState({ pageSize: _pageSize })
+		setPage(_currentPage)
+	}
+	const onUpdate=(record)=>{
+		console.log(record)
+		history('/blog/update',{state:record})
+	}
+	const onDeleteConfirm = useCallback(async (id) => {
+		await remove({id})
+		.then((rsp)=>{
+			Toast.success('删除成功')
+			fetchData()
+		})
+		.catch((err)=>{console.log(err)})
+	},[])
+
 
 	const dealData = () => {
 		let flag = false
@@ -336,7 +243,7 @@ const Index: React.FC = () => {
 			<Button type="warning" disabled={dealData()} style={{ marginBottom: 10, marginLeft: 10, display: trash }}>
 				回收站
 			</Button> */}
-      <PostSearch></PostSearch>
+      <PostSearch categoryOptions={categoryOptions} tagOptions={tagOptions}></PostSearch>
       <Table
 				columns={columns}
 				defaultExpandAllRows
@@ -345,8 +252,8 @@ const Index: React.FC = () => {
 				pagination={{
 					currentPage,
 					pageSize: pageSize,
-					total: data.length,
-					onPageChange: handlePageChange
+					total: total,
+					onChange: handlePageChange
 				}}
         size='small'
         scroll={scroll}

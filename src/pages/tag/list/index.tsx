@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Table, Popconfirm, Toast, Tag, Typography } from '@douyinfe/semi-ui'
 import { IconEdit, IconDelete } from '@douyinfe/semi-icons'
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
@@ -7,7 +7,9 @@ import ModalAddtag from '@/components/tag/add'
 import ModalUpdatetag from '@/components/tag/update'
 import { getColor } from '@/utils/utils'
 import { list, remove } from '@/config/api/tag'
-import useStateStore from '@/store/tag'
+import useStateStore from '@/pages/tag/store'
+
+import { useDebounceFetch } from '@/hooks/useDebounce'
 
 const Index: React.FC = () => {
 	const [data, setData] = useState([])
@@ -24,7 +26,8 @@ const Index: React.FC = () => {
 	const [visibleAdd, setVisibleAdd] = useState(false)
 	const [visibleUpdate, setVisibleUpdate] = useState(false)
 
-	const columns = [
+	const columns = useMemo(()=>{
+		return [
 		{
 			title:'序号',
 			dataIndex:'number',
@@ -79,7 +82,7 @@ const Index: React.FC = () => {
 			width: 200,
 			align: 'center',
 			render: (text, record, index) => {
-				const content = record.children ? '该项还存在子项' : ''
+				const content = record.children&&record.children.length ? '该项还存在子项' : ''
 				return (
 					<>
 						<Button style={{ marginLeft: 10 }} onClick={()=>onUpdate(record)}>
@@ -94,28 +97,27 @@ const Index: React.FC = () => {
 				)
 			}
 		}
-	] as ColumnProps[]
+	] as ColumnProps[]},[])
 
-	const onDeleteConfirm = async(id) => {
+	const onDeleteConfirm = useCallback(async (id) => {
 		await remove({id})
 		.then((rsp)=>{
 			Toast.success('删除成功')
 			fetchData()
 		})
 		.catch((err)=>{console.log(err)})
-	}
-	const onUpdate=(record)=>{
+	},[])
+	const onUpdate=useCallback((record)=>{
 		setVisibleUpdate(true)
 		setUpdateData(record)
-	}
+	},[])
 
 	const handlePageChange = (_currentPage: number, _pageSize: number) => {
 		updateState({pageSize:_pageSize})
 		setPage(_currentPage)
-		fetchData()
 	}
-	const fetchData = async () => {
-		setLoading(true)
+	
+	const fetchFunc =async () => {
 		await list({page:currentPage,limit:pageSize})
 		.then((rsp)=>{
 			console.log(rsp)
@@ -123,8 +125,17 @@ const Index: React.FC = () => {
 			setData(items as [])
 			setTotal(meta.totalItems||0)
 		})
-		.catch((err)=>{console.log(err)})
-		setLoading(false)
+		.catch((err)=>{
+			console.log(err)})
+	}
+	const debouncedFetch = useDebounceFetch(fetchFunc); 
+
+	const fetchData = async () => {
+		setLoading(true)
+		await debouncedFetch()
+		.then(()=>{
+			setLoading(false)
+		})
 		dealData()
 		setTrash('')
 	}
@@ -139,9 +150,6 @@ const Index: React.FC = () => {
 		flag=false
 		return !flag
 	}
-
-
-
 	return (
 		<>
 			<Button onClick={createData} type="primary" style={{ marginBottom: 10 }}>
