@@ -25,6 +25,7 @@ const Index: React.FC = () => {
 	const [trash, setTrash] = useState('none')
 	const { pageSize, updateState } = useStateStore((state) => state)
 	const [total, setTotal] = useState(0)
+	const [search, setSearch] = useState({})
 
 	// const [categoryOptions, setCategoryOptions] = useState([])
 	const columns = useMemo(()=>[
@@ -170,16 +171,17 @@ const Index: React.FC = () => {
     "https://lf3-static.bytednsdoc.com/obj/eden-cn/ptlz_zlp/ljhwZthlaukjlkulzlp/root-web-sites/colorful.jpg",
 ]), []); 
 
-	// const {categoryData, categoryTotal} = useCategoryData()
-	// console.log(categoryData)
-	// console.log(categoryTotal)
-
 	useEffect(() => {
 		fetchData()
 		fetchCategoryData()
 		fetchTagData()
 	}, [])
-	
+	useEffect(() => {
+		if (currentPage === 1) {
+			fetchData()
+		}
+		setPage(1)
+	}, [search])
 	const {categoryData,fetchCategoryData} = useCategoryStore(state=>state)
 	const categoryOptions = useDropdownTree(categoryData,'name')
 
@@ -188,7 +190,7 @@ const Index: React.FC = () => {
 
 
 	const fetchFunc = async () => {
-		await list({page:currentPage,limit:pageSize})
+		await list({ ...search,page:currentPage,limit:pageSize})
 		.then((rsp)=>{
 			console.log(rsp)
 			const {items,meta}=rsp.data;
@@ -207,7 +209,9 @@ const Index: React.FC = () => {
 		dealData()
 		setTrash('')
 	}
-
+	const handleSearch = (e: any) => {
+		setSearch({ ...e })
+	}
 	const handlePageChange = (_currentPage: number, _pageSize: number) => {
 		updateState({ pageSize: _pageSize })
 		setPage(_currentPage)
@@ -242,7 +246,7 @@ const Index: React.FC = () => {
 			<Button type="warning" disabled={dealData()} style={{ marginBottom: 10, marginLeft: 10, display: trash }}>
 				回收站
 			</Button> */}
-      <PostSearch categoryOptions={categoryOptions} tagOptions={tagOptions}></PostSearch>
+      <PostSearch categoryOptions={categoryOptions} tagOptions={tagOptions} setSearch={handleSearch}></PostSearch>
       <Table
 				columns={columns}
 				defaultExpandAllRows

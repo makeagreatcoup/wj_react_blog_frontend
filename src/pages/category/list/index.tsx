@@ -6,15 +6,12 @@ import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table'
 import ModalAddCategory from '@/components/category/add'
 import ModalUpdateCategory from '@/components/category/update'
 import useStateStore from '../store'
-import { list, remove, tree } from '@/config/api/category'
+import { remove, tree } from '@/config/api/category'
 import { useDebounceFetch } from '@/hooks/useDebounce'
-import { useDropdown } from '@/hooks/useDropdown'
 import { useDropdownTree } from '@/hooks/useDropdownTree'
-import { useCategoryData } from './useCategory'
 
 const Index: React.FC = () => {
 	const [loading, setLoading] = useState(false)
-	const [total, setTotal] = useState(0)
 	const [updateData, setUpdateData] = useState({})
 	// 是否开启软删除
 	const [trash, setTrash] = useState('none')
@@ -102,7 +99,6 @@ const Index: React.FC = () => {
 			console.log(rsp)
 			const { items} = rsp.data
 			setSelectData(items)
-			setTotal(items.length || 0)
 		})
 	}
 	const debouncedFetch = useDebounceFetch(fetchFunc); 

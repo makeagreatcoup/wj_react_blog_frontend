@@ -2,9 +2,17 @@
 import { Button, Col, DatePicker, Form, Row, Tag } from '@douyinfe/semi-ui'
 import { TagColor } from '@douyinfe/semi-ui/lib/es/tag'
 import React, { useEffect, useState } from 'react'
+import qs from 'qs';
 
-const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions }) => {
+const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions,setSearch }) => {
 	const onSubmit = (values) => {
+		values.tags=qs.stringify(values.tags)
+		values.startTime = values.createAt[0]
+		values.endTime = values.createAt[1]
+		if(values.publishStatus!==undefined){
+			values.isPublished = values.publishStatus?false:true
+		}
+		setSearch(values)
 		console.log(values)
 	}
 	const onReset = (formApi) => {
@@ -26,25 +34,25 @@ const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions }) => {
 	const [dataValueArr, setDataValueArr] = useState([])
 	const [open, setOpen] = useState(false)
 
-	const [categoriesArr, setCategoryData] = useState([])
-	const [tagsArr, setTagData] = useState([])
+	// const [categoriesArr, setCategoryData] = useState([])
+	// const [tagsArr, setTagData] = useState([])
 	const getWidthStyle = { width: 150 }
 	const getDatePickerWidthStyle = { width: 400 }
 	const allParam = [{ key: '0', value: undefined, label: '全部' }]
 
-	useEffect(() => {
-		setCategoryData({ ...allParam, ...categoryOptions })
-	}, [categoryOptions])
-	useEffect(() => {
-		setTagData(tagOptions)
-	}, [tagOptions])
-	const statusOptions = [
+	// useEffect(() => {
+	// 	setCategoryData({ ...allParam, ...categoryOptions })
+	// }, [categoryOptions])
+	// useEffect(() => {
+	// 	setTagData(tagOptions)
+	// }, [tagOptions])
+	const stateOptions = [
 		{ key: '1', value: 'ON', label: 'ON' },
 		{ key: '2', value: 'OFF', label: 'OFF' }
 	]
 	const publishStatusOptions = [
-		{ key: '1', value: '1', label: '已发布' },
-		{ key: '2', value: '2', label: '未发布' }
+		{ key: '1', value: 0, label: '已发布' },
+		{ key: '2', value: 1, label: '未发布' }
 	]
 	return (
 		<>
@@ -74,7 +82,7 @@ const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions }) => {
 													label="标签"
 													placeholder="请选择标签"
 												>
-													{tagsArr.map((item) => (
+													{tagOptions.map((item) => (
 														<Form.Select.Option key={item.key} value={item.value}>
 															<Tag color={item.color as TagColor}>{item.label}</Tag>
 														</Form.Select.Option>
@@ -82,8 +90,8 @@ const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions }) => {
 												</Form.Select>
 									</Col>
 									<Col span={6}>
-										<Form.Select style={getWidthStyle} field="status" label="状态" placeholder="请选择文章状态">
-											{[...allParam, ...statusOptions].map((item) => (
+										<Form.Select style={getWidthStyle} field="state" label="状态" placeholder="请选择文章状态">
+											{[...allParam, ...stateOptions].map((item) => (
 												<Form.Select.Option key={item.key} value={item.value}>
 													{item.label}
 												</Form.Select.Option>
@@ -115,9 +123,9 @@ const Index: React.FC<Record<any, any>> = ({ categoryOptions, tagOptions }) => {
 											value={dataValueArr}
 										/>
 									</Col>
-									<Col span={6}>
+									{/* <Col span={6}>
 										<Form.Switch field="trashed" label="回收站" onChange={onChangeSwitch} />
-									</Col>
+									</Col> */}
 								</Row>
 							</Col>
 							<Col span={4}>
