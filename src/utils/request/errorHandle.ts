@@ -11,6 +11,7 @@ function handleCommonError(err: any, config: any) {
 	switch (code) {
 		case errorCode.c401: {
 			// 重新登录
+			window.location.href = '/login'
 			localStorage.clear()
 			break
 		}
@@ -22,7 +23,7 @@ function handleCommonError(err: any, config: any) {
 	}
 }
 function handleNoCommontError(err: any) {
-	if (!err) {
+	if (err instanceof String) {
 		Toast.error(errorMsg)
 	} else if (err.errorItems && err.errorItems.length > 0 && err.errorItems[0].message) {
 		Toast.error(err.errorItems[0].message)

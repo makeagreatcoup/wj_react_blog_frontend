@@ -27,7 +27,9 @@ axios.interceptors.response.use(
 	},
 	// 错误拦截
 	(error) => {
-		console.log(error)
+		if(error === 'Unauthorized'){
+			window.location.href = '/login'
+		}
 		const { response } = error
 		toogleLoading(false)
 		// 请求有响应
@@ -40,6 +42,8 @@ axios.interceptors.response.use(
 			}
 			handleNoCommontError(errorMsg)
 			return Promise.reject(errorMsg)
+		}else{
+			window.location.href = '/login'
 		}
 		// 请求超时
 		if (error.code === 408) {
